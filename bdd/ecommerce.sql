@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  ven. 19 avr. 2019 à 08:31
+-- Généré le :  ven. 19 avr. 2019 à 10:05
 -- Version du serveur :  5.7.21
 -- Version de PHP :  7.2.4
 
@@ -604,6 +604,7 @@ CREATE TABLE IF NOT EXISTS `sylius_admin_user` (
   `first_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `locale_code` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
+  `encoder_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -611,10 +612,10 @@ CREATE TABLE IF NOT EXISTS `sylius_admin_user` (
 -- Déchargement des données de la table `sylius_admin_user`
 --
 
-INSERT INTO `sylius_admin_user` (`id`, `username`, `username_canonical`, `enabled`, `salt`, `password`, `last_login`, `password_reset_token`, `password_requested_at`, `email_verification_token`, `verified_at`, `locked`, `expires_at`, `credentials_expire_at`, `roles`, `email`, `email_canonical`, `created_at`, `updated_at`, `first_name`, `last_name`, `locale_code`) VALUES
-(1, 'sylius', 'sylius', 1, '37gscouveiqsc84s8kk8oo4wwokscc8', 'rrWMAqy6bJl/zvHSTqmy+yVHMXwgKP1BtI84srUvNgbv+T4x/SVUWlxNSYX7PIpwSB3qTGs9A9kVmvO6KlXi8g==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";}', 'sylius@example.com', 'sylius@example.com', '2019-01-18 13:51:44', '2019-01-18 13:51:44', 'John', 'Doe', 'en_US'),
-(2, 'api', 'api', 1, 'pl5pk6huhes04kgss04ckk4sckgk8co', '5zXOJmtoETMhNTeiKPDZ+XDmik17kahoDRQQ9u1O4w8y9410NQJTReF+K/W2rqLSS3P/PbxoR3+9BZjgnGVGyA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:2:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";i:1;s:15:\"ROLE_API_ACCESS\";}', 'api@example.com', 'api@example.com', '2019-01-18 13:51:44', '2019-01-18 13:51:44', 'Luke', 'Brushwood', 'en_US'),
-(3, 'p.ibrahima.seck@gmail.com', 'p.ibrahima.seck@gmail.com', 1, 'b35qnsfa8wg8s4s0o44sccgs4s480kk', 'QtnNLdPOio8dAMRYbFAYHm0KEVqah7UYdXj+3ywvRG1haUFlBUYQfUcAIjZjHfmMMpbZMgQAxWFXq9GUS3TxjA==', '2019-04-16 07:43:30', NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";}', 'p.ibrahima.seck@gmail.com', 'p.ibrahima.seck@gmail.com', '2019-01-18 13:53:20', '2019-04-16 07:43:31', NULL, NULL, 'en_US');
+INSERT INTO `sylius_admin_user` (`id`, `username`, `username_canonical`, `enabled`, `salt`, `password`, `last_login`, `password_reset_token`, `password_requested_at`, `email_verification_token`, `verified_at`, `locked`, `expires_at`, `credentials_expire_at`, `roles`, `email`, `email_canonical`, `created_at`, `updated_at`, `first_name`, `last_name`, `locale_code`, `encoder_name`) VALUES
+(1, 'sylius', 'sylius', 1, '37gscouveiqsc84s8kk8oo4wwokscc8', 'rrWMAqy6bJl/zvHSTqmy+yVHMXwgKP1BtI84srUvNgbv+T4x/SVUWlxNSYX7PIpwSB3qTGs9A9kVmvO6KlXi8g==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";}', 'sylius@example.com', 'sylius@example.com', '2019-01-18 13:51:44', '2019-01-18 13:51:44', 'John', 'Doe', 'en_US', NULL),
+(2, 'api', 'api', 1, 'pl5pk6huhes04kgss04ckk4sckgk8co', '5zXOJmtoETMhNTeiKPDZ+XDmik17kahoDRQQ9u1O4w8y9410NQJTReF+K/W2rqLSS3P/PbxoR3+9BZjgnGVGyA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:2:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";i:1;s:15:\"ROLE_API_ACCESS\";}', 'api@example.com', 'api@example.com', '2019-01-18 13:51:44', '2019-01-18 13:51:44', 'Luke', 'Brushwood', 'en_US', NULL),
+(3, 'login', 'login', 1, 'b35qnsfa8wg8s4s0o44sccgs4s480kk', '$argon2i$v=19$m=1024,t=2,p=2$cHRwOUNtSGIucnNQUWN0Wg$sjN3PKyDb4V2VegbIPYLk2k8/ar6Wgz9uILFAtddpEE', '2019-04-19 10:01:10', NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";}', 'login@gmail.com', 'login@gmail.com', '2019-01-18 13:53:20', '2019-04-19 10:03:25', NULL, NULL, 'en_US', 'argon2i');
 
 -- --------------------------------------------------------
 
@@ -642,8 +643,10 @@ CREATE TABLE IF NOT EXISTS `sylius_channel` (
   `skipping_shipping_step_allowed` tinyint(1) NOT NULL,
   `skipping_payment_step_allowed` tinyint(1) NOT NULL,
   `account_verification_required` tinyint(1) NOT NULL,
+  `shop_billing_data_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_16C8119E77153098` (`code`),
+  UNIQUE KEY `UNIQ_16C8119EB5282EDF` (`shop_billing_data_id`),
   KEY `IDX_16C8119E743BF776` (`default_locale_id`),
   KEY `IDX_16C8119E3101778E` (`base_currency_id`),
   KEY `IDX_16C8119EA978C17` (`default_tax_zone_id`),
@@ -654,9 +657,9 @@ CREATE TABLE IF NOT EXISTS `sylius_channel` (
 -- Déchargement des données de la table `sylius_channel`
 --
 
-INSERT INTO `sylius_channel` (`id`, `default_locale_id`, `base_currency_id`, `default_tax_zone_id`, `code`, `name`, `color`, `description`, `enabled`, `hostname`, `created_at`, `updated_at`, `theme_name`, `tax_calculation_strategy`, `contact_email`, `skipping_shipping_step_allowed`, `skipping_payment_step_allowed`, `account_verification_required`) VALUES
-(1, 1, 2, 1, 'US_WEB', 'US Web Store', 'Tan', NULL, 1, 'localhost', '2019-01-18 13:51:42', '2019-01-18 13:53:20', NULL, 'order_items_based', NULL, 0, 0, 1),
-(2, 2, 2, 2, 'FR', 'France', '#000000', NULL, 1, NULL, '2019-01-18 15:37:19', '2019-01-18 15:37:21', NULL, 'order_items_based', NULL, 0, 0, 1);
+INSERT INTO `sylius_channel` (`id`, `default_locale_id`, `base_currency_id`, `default_tax_zone_id`, `code`, `name`, `color`, `description`, `enabled`, `hostname`, `created_at`, `updated_at`, `theme_name`, `tax_calculation_strategy`, `contact_email`, `skipping_shipping_step_allowed`, `skipping_payment_step_allowed`, `account_verification_required`, `shop_billing_data_id`) VALUES
+(1, 1, 2, 1, 'US_WEB', 'US Web Store', 'Tan', NULL, 1, 'localhost', '2019-01-18 13:51:42', '2019-01-18 13:53:20', NULL, 'order_items_based', NULL, 0, 0, 1, NULL),
+(2, 2, 2, 2, 'FR', 'France', '#000000', NULL, 1, NULL, '2019-01-18 15:37:19', '2019-01-18 15:37:21', NULL, 'order_items_based', NULL, 0, 0, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -2731,7 +2734,7 @@ CREATE TABLE IF NOT EXISTS `sylius_product_review` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
   `author_id` int(11) NOT NULL,
-  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `rating` int(11) NOT NULL,
   `comment` longtext COLLATE utf8_unicode_ci,
   `status` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -4601,6 +4604,24 @@ INSERT INTO `sylius_shipping_method_translation` (`id`, `translatable_id`, `name
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `sylius_shop_billing_data`
+--
+
+DROP TABLE IF EXISTS `sylius_shop_billing_data`;
+CREATE TABLE IF NOT EXISTS `sylius_shop_billing_data` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `company` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tax_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `country_code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `street` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `city` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `postcode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `sylius_shop_user`
 --
 
@@ -4626,6 +4647,7 @@ CREATE TABLE IF NOT EXISTS `sylius_shop_user` (
   `email_canonical` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
+  `encoder_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_7C2B74809395C3F3` (`customer_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -4634,28 +4656,28 @@ CREATE TABLE IF NOT EXISTS `sylius_shop_user` (
 -- Déchargement des données de la table `sylius_shop_user`
 --
 
-INSERT INTO `sylius_shop_user` (`id`, `customer_id`, `username`, `username_canonical`, `enabled`, `salt`, `password`, `last_login`, `password_reset_token`, `password_requested_at`, `email_verification_token`, `verified_at`, `locked`, `expires_at`, `credentials_expire_at`, `roles`, `email`, `email_canonical`, `created_at`, `updated_at`) VALUES
-(1, 1, 'shop@example.com', 'shop@example.com', 1, '8m7z69njg0gsckow8kw4gsk4w0g0w4g', '/PL7GnjYEddqO4/47WRfdZ5ct/rvXBez73sYEB/sCslzyig/ePnkmTjWZ7kuAQLk5lPf3YMhP170WEHTpIbN7A==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43'),
-(2, 2, 'augusta35@thompson.com', 'augusta35@thompson.com', 1, 'e0qydzl3kpsgw88ckk0c0ws8c04884o', 'BP/zvDnhFesG3KVUKqrmlvZ1UcEMLcKFxWoCT1ORDDyv7tt4OQlYk7c4ToDe8wv2SMalwxL3Ra2ZTuKwBHnSLQ==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43'),
-(3, 3, 'arielle57@yahoo.com', 'arielle57@yahoo.com', 1, '2adz9qp8l2xw0kcgws0wkw4cks4s00w', 'txkuq5rH/2qKM0DNixDKOlYbJvtCocSO5keGrYmn3RNjD2m+cucSPwZHnGyZKUNJg1dQrVZJiM2GqK5nDslHWA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43'),
-(4, 4, 'west.felicity@rosenbaum.org', 'west.felicity@rosenbaum.org', 1, 'b44kpb94uj48scwssss8ss4ks4csksw', 'uFWbZFqspTDu3QIV1IufzJliBAoJ7QxZbBgOwrupddFLyg/G2oVMtWBHkKz4z6aoxoYSH/scwIwDKMteY8/B6g==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43'),
-(5, 5, 'cronin.kirstin@yahoo.com', 'cronin.kirstin@yahoo.com', 1, 'bizfdorc0b480k40gk4cgsowk4cw0w4', 'QYX4kzuqIH/dZ6MinV7Y0jyXrbyH07qhjXs2cCGCiSnHaIOdq0dLDaYfjxYFKIq4Ds1E9sxNoTGXjkNQdlFHbw==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43'),
-(6, 6, 'ola44@yahoo.com', 'ola44@yahoo.com', 1, '5dp99tpvkn8kckkggosc8g04ss44kgs', 'serSCTI8NLjuXe0PuS/QrBXyl+9oWgdmGx/NKGGX58KfG/NdvrjZoMOExrtrzI4eZrLLKwho+flmXuWZ0DjZPA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43'),
-(7, 7, 'rice.jared@stroman.com', 'rice.jared@stroman.com', 1, '9nwyrp5xdgkk4o040w0g4884cw0sg4o', '6la40oMfW7LXsVV0Bh8j4Dqz9jWxInsoY2eXsou4Z96rByVgseA+zpubutVP/mCnWRCKJosIC04tF+zKuYXdxA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43'),
-(8, 8, 'jgutkowski@wiza.com', 'jgutkowski@wiza.com', 1, 'hzm8zu11c1kwksccgsswkw8ko84kk4g', 'v7+QAGaZ8KNqbqibv9x+bqxCseS2Uy2PHeJ+iQteMWi6U0m3XMhdkrGGRdQZbptY6q3KDQn8lhjeQSU8xNPfrg==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43'),
-(9, 9, 'verla73@grimes.com', 'verla73@grimes.com', 1, '2v355dysnv40c4ksssw8s8cok8skw8w', '2RDP1mznewLOYwUUjVa6Ot0fHGnFGIm/HCgmjE9M2tShddK6Du0IYEhne5uVLIBlVAOz28RcxSPsHWz1J1WDCA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44'),
-(10, 10, 'yost.arlo@braun.com', 'yost.arlo@braun.com', 1, 'dr0vveaoblwgwkosg8ccksgoo880wgg', 'n3PAV64F1uz5l6h+AKZ82casqSwmy3f4nrItHDC/Q6zPtds03XudBr7erUncC8IY0LnX1o4RYcc4qBLLq5JS7A==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44'),
-(11, 11, 'nbernhard@ruecker.com', 'nbernhard@ruecker.com', 1, 'pl8qt9rdlf4og8ss8kkg8w4wc0kww84', 'RkNUVpFkHuCyprl1Uk9Z1XGywTZ7fEw88a/T6nFVIEZVXLV/4Jwe7ejYeYceyjUZN4htRgjQA+k9Al7dCnGgpA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44'),
-(12, 12, 'kaylin19@yahoo.com', 'kaylin19@yahoo.com', 1, '8mundz08t7k08wsggk0cgsck40w4ww4', 'G95/z1J7yeIJdovNM2JD6mKQ+uNVvnjyCxhL9ue9KHuLkrHrhIQBCI7LScK1OEvyPW+w/B02i7BPNIYS4+xJMA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44'),
-(13, 13, 'cwehner@hotmail.com', 'cwehner@hotmail.com', 1, '3er1jwrkr6ckoko4cskkwgos0ss80k0', 'POhy9yxfH5+EoMqRmAn2mw7jvqFB5yhtbnmutLMAr/FztJeu3utNL3/49znowB65VC9uc7gwDa/6GYHoHI8txA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44'),
-(14, 14, 'jayme.denesik@hotmail.com', 'jayme.denesik@hotmail.com', 1, '2bv1vn3dx0w04o0cgw40s04kocwk04c', '4MwO6cshRbSO0gNH6kRbWhUwlrtxPH01PH9T04ScwFgvD+FKbvZSyIOPU74S138yxFpnATZAeRpQ02l3HMyF0w==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44'),
-(15, 15, 'selina.mcglynn@hotmail.com', 'selina.mcglynn@hotmail.com', 1, '65xfpth8qukok0k0k84og0kocogw084', 'cAECB3p7FDw2D/Bf1B1UIT3IHrGjLQZm575CWah38bUObAo/vbI4f7CuurjWO9sO920JTXr25emFTgVvzUqjoQ==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44'),
-(16, 16, 'uwintheiser@yahoo.com', 'uwintheiser@yahoo.com', 1, '6mf4efqlglk4wk8owocsk4c4gwg0ckc', 'UGbEyCkzrqNoB/vmfrDurtT1wO0KalulO9ldUoeOkfzV/ifiGG72DlSM9ieM+Pvz7Pl0dq8+0W+x9e9XrnMrvw==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44'),
-(17, 17, 'chauncey.bernhard@hotmail.com', 'chauncey.bernhard@hotmail.com', 1, 'q6ut3um2tk0g84gwwgg04w0s08os8wo', 'yzZ1CRKiDtj1wFlqXh7+wAFSMKXhnjN2YR0xBXSet6IsOV8pTIaxBLMv3bbzvAzFN2ApO8RY9AyH/OplopDaYg==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44'),
-(18, 18, 'cleve.rogahn@rempel.com', 'cleve.rogahn@rempel.com', 1, 'soj9pwolpqo8kgscc0cossg4s4sw4c0', 'WhSBobK17Cjm+q2dshZqatN/KGvRq69OlQaeSFLN8Qk3AIBa38zARRpIkn935duVu6YHMH7jhl9Dpmz4lzAGKQ==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44'),
-(19, 19, 'glenna44@yahoo.com', 'glenna44@yahoo.com', 1, 'dw4vpyl3yxw0444ccww0wwskwookk80', '17Ixa+ROyqe8Kt4t8UCZdAiHrY66IGb7ZrWvDQ3RaLYsE43jWRqXpUnKNI2XEQvLEF5jny34eBGjKJU8/qhVzg==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44'),
-(20, 20, 'jaskolski.curtis@crooks.com', 'jaskolski.curtis@crooks.com', 1, 'fm2ky95iqsgkkgo844cgsc808800kkk', '+uQ4oXISX9ZQ9EEx7jD0njmnAyLM58ofVJSacKAvYMyzrBHdDmCWcsw4rcf4vche59bJnNn3hbsOvVgFTUhOZQ==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44'),
-(21, 21, 'raleigh.moore@gerlach.com', 'raleigh.moore@gerlach.com', 1, '4c75d3a0ggowsc48w08c08co8og0wck', '4cK995j2W22VQh9I5wC/4Dvx96GgXzEfK09locEt94ks4wmri8ZcBGaY3TSvG6y154GtQttJomTae1eX4U5NTQ==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44');
+INSERT INTO `sylius_shop_user` (`id`, `customer_id`, `username`, `username_canonical`, `enabled`, `salt`, `password`, `last_login`, `password_reset_token`, `password_requested_at`, `email_verification_token`, `verified_at`, `locked`, `expires_at`, `credentials_expire_at`, `roles`, `email`, `email_canonical`, `created_at`, `updated_at`, `encoder_name`) VALUES
+(1, 1, 'shop@example.com', 'shop@example.com', 1, '8m7z69njg0gsckow8kw4gsk4w0g0w4g', '/PL7GnjYEddqO4/47WRfdZ5ct/rvXBez73sYEB/sCslzyig/ePnkmTjWZ7kuAQLk5lPf3YMhP170WEHTpIbN7A==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43', NULL),
+(2, 2, 'augusta35@thompson.com', 'augusta35@thompson.com', 1, 'e0qydzl3kpsgw88ckk0c0ws8c04884o', 'BP/zvDnhFesG3KVUKqrmlvZ1UcEMLcKFxWoCT1ORDDyv7tt4OQlYk7c4ToDe8wv2SMalwxL3Ra2ZTuKwBHnSLQ==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43', NULL),
+(3, 3, 'arielle57@yahoo.com', 'arielle57@yahoo.com', 1, '2adz9qp8l2xw0kcgws0wkw4cks4s00w', 'txkuq5rH/2qKM0DNixDKOlYbJvtCocSO5keGrYmn3RNjD2m+cucSPwZHnGyZKUNJg1dQrVZJiM2GqK5nDslHWA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43', NULL),
+(4, 4, 'west.felicity@rosenbaum.org', 'west.felicity@rosenbaum.org', 1, 'b44kpb94uj48scwssss8ss4ks4csksw', 'uFWbZFqspTDu3QIV1IufzJliBAoJ7QxZbBgOwrupddFLyg/G2oVMtWBHkKz4z6aoxoYSH/scwIwDKMteY8/B6g==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43', NULL),
+(5, 5, 'cronin.kirstin@yahoo.com', 'cronin.kirstin@yahoo.com', 1, 'bizfdorc0b480k40gk4cgsowk4cw0w4', 'QYX4kzuqIH/dZ6MinV7Y0jyXrbyH07qhjXs2cCGCiSnHaIOdq0dLDaYfjxYFKIq4Ds1E9sxNoTGXjkNQdlFHbw==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43', NULL),
+(6, 6, 'ola44@yahoo.com', 'ola44@yahoo.com', 1, '5dp99tpvkn8kckkggosc8g04ss44kgs', 'serSCTI8NLjuXe0PuS/QrBXyl+9oWgdmGx/NKGGX58KfG/NdvrjZoMOExrtrzI4eZrLLKwho+flmXuWZ0DjZPA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43', NULL),
+(7, 7, 'rice.jared@stroman.com', 'rice.jared@stroman.com', 1, '9nwyrp5xdgkk4o040w0g4884cw0sg4o', '6la40oMfW7LXsVV0Bh8j4Dqz9jWxInsoY2eXsou4Z96rByVgseA+zpubutVP/mCnWRCKJosIC04tF+zKuYXdxA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43', NULL),
+(8, 8, 'jgutkowski@wiza.com', 'jgutkowski@wiza.com', 1, 'hzm8zu11c1kwksccgsswkw8ko84kk4g', 'v7+QAGaZ8KNqbqibv9x+bqxCseS2Uy2PHeJ+iQteMWi6U0m3XMhdkrGGRdQZbptY6q3KDQn8lhjeQSU8xNPfrg==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:43', '2019-01-18 13:51:43', NULL),
+(9, 9, 'verla73@grimes.com', 'verla73@grimes.com', 1, '2v355dysnv40c4ksssw8s8cok8skw8w', '2RDP1mznewLOYwUUjVa6Ot0fHGnFGIm/HCgmjE9M2tShddK6Du0IYEhne5uVLIBlVAOz28RcxSPsHWz1J1WDCA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44', NULL),
+(10, 10, 'yost.arlo@braun.com', 'yost.arlo@braun.com', 1, 'dr0vveaoblwgwkosg8ccksgoo880wgg', 'n3PAV64F1uz5l6h+AKZ82casqSwmy3f4nrItHDC/Q6zPtds03XudBr7erUncC8IY0LnX1o4RYcc4qBLLq5JS7A==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44', NULL),
+(11, 11, 'nbernhard@ruecker.com', 'nbernhard@ruecker.com', 1, 'pl8qt9rdlf4og8ss8kkg8w4wc0kww84', 'RkNUVpFkHuCyprl1Uk9Z1XGywTZ7fEw88a/T6nFVIEZVXLV/4Jwe7ejYeYceyjUZN4htRgjQA+k9Al7dCnGgpA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44', NULL),
+(12, 12, 'kaylin19@yahoo.com', 'kaylin19@yahoo.com', 1, '8mundz08t7k08wsggk0cgsck40w4ww4', 'G95/z1J7yeIJdovNM2JD6mKQ+uNVvnjyCxhL9ue9KHuLkrHrhIQBCI7LScK1OEvyPW+w/B02i7BPNIYS4+xJMA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44', NULL),
+(13, 13, 'cwehner@hotmail.com', 'cwehner@hotmail.com', 1, '3er1jwrkr6ckoko4cskkwgos0ss80k0', 'POhy9yxfH5+EoMqRmAn2mw7jvqFB5yhtbnmutLMAr/FztJeu3utNL3/49znowB65VC9uc7gwDa/6GYHoHI8txA==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44', NULL),
+(14, 14, 'jayme.denesik@hotmail.com', 'jayme.denesik@hotmail.com', 1, '2bv1vn3dx0w04o0cgw40s04kocwk04c', '4MwO6cshRbSO0gNH6kRbWhUwlrtxPH01PH9T04ScwFgvD+FKbvZSyIOPU74S138yxFpnATZAeRpQ02l3HMyF0w==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44', NULL),
+(15, 15, 'selina.mcglynn@hotmail.com', 'selina.mcglynn@hotmail.com', 1, '65xfpth8qukok0k0k84og0kocogw084', 'cAECB3p7FDw2D/Bf1B1UIT3IHrGjLQZm575CWah38bUObAo/vbI4f7CuurjWO9sO920JTXr25emFTgVvzUqjoQ==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44', NULL),
+(16, 16, 'uwintheiser@yahoo.com', 'uwintheiser@yahoo.com', 1, '6mf4efqlglk4wk8owocsk4c4gwg0ckc', 'UGbEyCkzrqNoB/vmfrDurtT1wO0KalulO9ldUoeOkfzV/ifiGG72DlSM9ieM+Pvz7Pl0dq8+0W+x9e9XrnMrvw==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44', NULL),
+(17, 17, 'chauncey.bernhard@hotmail.com', 'chauncey.bernhard@hotmail.com', 1, 'q6ut3um2tk0g84gwwgg04w0s08os8wo', 'yzZ1CRKiDtj1wFlqXh7+wAFSMKXhnjN2YR0xBXSet6IsOV8pTIaxBLMv3bbzvAzFN2ApO8RY9AyH/OplopDaYg==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44', NULL),
+(18, 18, 'cleve.rogahn@rempel.com', 'cleve.rogahn@rempel.com', 1, 'soj9pwolpqo8kgscc0cossg4s4sw4c0', 'WhSBobK17Cjm+q2dshZqatN/KGvRq69OlQaeSFLN8Qk3AIBa38zARRpIkn935duVu6YHMH7jhl9Dpmz4lzAGKQ==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44', NULL),
+(19, 19, 'glenna44@yahoo.com', 'glenna44@yahoo.com', 1, 'dw4vpyl3yxw0444ccww0wwskwookk80', '17Ixa+ROyqe8Kt4t8UCZdAiHrY66IGb7ZrWvDQ3RaLYsE43jWRqXpUnKNI2XEQvLEF5jny34eBGjKJU8/qhVzg==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44', NULL),
+(20, 20, 'jaskolski.curtis@crooks.com', 'jaskolski.curtis@crooks.com', 1, 'fm2ky95iqsgkkgo844cgsc808800kkk', '+uQ4oXISX9ZQ9EEx7jD0njmnAyLM58ofVJSacKAvYMyzrBHdDmCWcsw4rcf4vche59bJnNn3hbsOvVgFTUhOZQ==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44', NULL),
+(21, 21, 'raleigh.moore@gerlach.com', 'raleigh.moore@gerlach.com', 1, '4c75d3a0ggowsc48w08c08co8og0wck', '4cK995j2W22VQh9I5wC/4Dvx96GgXzEfK09locEt94ks4wmri8ZcBGaY3TSvG6y154GtQttJomTae1eX4U5NTQ==', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:9:\"ROLE_USER\";}', NULL, NULL, '2019-01-18 13:51:44', '2019-01-18 13:51:44', NULL);
 
 -- --------------------------------------------------------
 
@@ -4916,7 +4938,8 @@ ALTER TABLE `sylius_admin_api_refresh_token`
 ALTER TABLE `sylius_channel`
   ADD CONSTRAINT `FK_16C8119E3101778E` FOREIGN KEY (`base_currency_id`) REFERENCES `sylius_currency` (`id`),
   ADD CONSTRAINT `FK_16C8119E743BF776` FOREIGN KEY (`default_locale_id`) REFERENCES `sylius_locale` (`id`),
-  ADD CONSTRAINT `FK_16C8119EA978C17` FOREIGN KEY (`default_tax_zone_id`) REFERENCES `sylius_zone` (`id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `FK_16C8119EA978C17` FOREIGN KEY (`default_tax_zone_id`) REFERENCES `sylius_zone` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `FK_16C8119EB5282EDF` FOREIGN KEY (`shop_billing_data_id`) REFERENCES `sylius_shop_billing_data` (`id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `sylius_channel_currencies`
