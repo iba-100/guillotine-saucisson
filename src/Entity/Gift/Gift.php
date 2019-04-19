@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\MappedSuperclass;
  * Gift.
  * @ORM\Table(name="gift")
  * @MappedSuperclass
+ * @ORM\Entity()
  */
 class Gift
 {
@@ -105,7 +106,7 @@ class Gift
      */
     public function setMessage($message)
     {
-        $this->lastname = $message;
+        $this->message = $message;
 
         return $this;
     }
