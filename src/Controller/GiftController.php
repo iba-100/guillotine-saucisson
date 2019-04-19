@@ -20,18 +20,18 @@ $gift = new Gift();
 
 
 $form = $this->createFormBuilder($gift)
-    ->add('email', TextType::class)
-    ->add('firstname', TextType::class)
     ->add('lastname', TextType::class)
     ->add('phone', NumberType::class)
-    ->add('message', TextareaType::class)
+    ->add('firstname', TextType::class)
+    ->add('message', TextType::class)
+    ->add('email', TextType::class)
     ->add('save', SubmitType::class, ['label' => 'Create new gift'])
     ->getForm();
 
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-        // $form->getData() holds the submitted values
+
         $gift = $form->getData();
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($gift);

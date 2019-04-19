@@ -40,7 +40,7 @@ class Gift
     /**
      * @var string
      *
-     * @ORM\Column(name="price", type="string", length=255)
+     * @ORM\Column(name="firstname", type="string", length=255)
      */
     private $firstname;
 
