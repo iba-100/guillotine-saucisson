@@ -28,15 +28,19 @@ Installation
 ------------
 
 ```bash
-$ wget http://getcomposer.org/composer.phar
-$ php composer.phar create-project sylius/sylius-standard project
-$ cd project
-$ yarn install
-$ yarn build
-$ php bin/console sylius:install
+$ composer update
+$ create database
+$ import database
+$ php bin/console server:run
+
 $ php bin/console server:start
 $ open http://localhost:8000/
 ```
+
+There is 2 chanels fr and en_US, en_US hev the most content
+
+/gift to access the gift form
+
 
 Troubleshooting
 ---------------
@@ -80,3 +84,4 @@ Authors
 
 Sylius was originally created by [Paweł Jędrzejewski](http://pjedrzejewski.com).
 See the list of [contributors from our awesome community](https://github.com/Sylius/Sylius/contributors).
+

@@ -2,6 +2,10 @@ gift_participation:
   path: en_US/gift
   controller: App\Controller\GiftController::index
 
+lotery_chooser:
+  path: en_US/lotery
+  controller: App\Controller\GiftController::lotery
+
 toto:
   path: /toto
 
