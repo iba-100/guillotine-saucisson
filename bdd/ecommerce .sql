@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  ven. 19 avr. 2019 à 11:18
+-- Généré le :  ven. 19 avr. 2019 à 14:16
 -- Version du serveur :  5.7.21
 -- Version de PHP :  7.2.4
 
@@ -19,8 +19,35 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `ecomcar`
+-- Base de données :  `ecommerce`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `gift`
+--
+
+DROP TABLE IF EXISTS `gift`;
+CREATE TABLE IF NOT EXISTS `gift` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `lastname` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
+  `phone` int(11) NOT NULL,
+  `firstname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `message` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `email` varchar(60) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_A47C990D3124B5B6` (`lastname`),
+  UNIQUE KEY `UNIQ_A47C990D444F97DD` (`phone`),
+  UNIQUE KEY `UNIQ_A47C990DE7927C74` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Déchargement des données de la table `gift`
+--
+
+INSERT INTO `gift` (`id`, `lastname`, `phone`, `firstname`, `message`, `email`) VALUES
+(1, 'YES', 752152552, 'testyguy', 'hiohoihdioqhiohfoih', 'ijfqdpijjrp');
 
 -- --------------------------------------------------------
 
@@ -524,7 +551,7 @@ CREATE TABLE IF NOT EXISTS `sylius_admin_user` (
 --
 
 INSERT INTO `sylius_admin_user` (`id`, `username`, `username_canonical`, `enabled`, `salt`, `password`, `last_login`, `password_reset_token`, `password_requested_at`, `email_verification_token`, `verified_at`, `locked`, `expires_at`, `credentials_expire_at`, `roles`, `email`, `email_canonical`, `created_at`, `updated_at`, `first_name`, `last_name`, `locale_code`, `encoder_name`) VALUES
-(1, 'sylius', 'sylius', 1, 'kuxi5o4dtm8o44kss0w8gs88848o4og', '$argon2i$v=19$m=1024,t=2,p=2$Uy8wMEtMRTJLVTZ3ZWt4VQ$ENG1PgKb0tobGQKS/wAdsy32ZlOh75+e0GUW/xYQRSA', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";}', 'sylius@example.com', 'sylius@example.com', '2019-04-16 08:45:24', '2019-04-16 08:45:24', 'John', 'Doe', 'en_US', 'argon2i'),
+(1, 'sylius', 'sylius', 1, 'kuxi5o4dtm8o44kss0w8gs88848o4og', '$argon2i$v=19$m=1024,t=2,p=2$Uy8wMEtMRTJLVTZ3ZWt4VQ$ENG1PgKb0tobGQKS/wAdsy32ZlOh75+e0GUW/xYQRSA', '2019-04-19 15:52:40', NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";}', 'sylius@example.com', 'sylius@example.com', '2019-04-16 08:45:24', '2019-04-19 15:52:40', 'John', 'Doe', 'fr_FR', 'argon2i'),
 (2, 'api', 'api', 1, '4hzein68fcw0g8s4s8w4sccg48sws0o', '$argon2i$v=19$m=1024,t=2,p=2$d3RDUVUzMnUzR1VwTEVvdg$S9dclEU5Vl/7csoKWC0T2BDU4VTnQ2XJJml9XpIn7pI', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:2:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";i:1;s:15:\"ROLE_API_ACCESS\";}', 'api@example.com', 'api@example.com', '2019-04-16 08:45:24', '2019-04-16 08:45:24', 'Luke', 'Brushwood', 'en_US', 'argon2i'),
 (3, 'p.ibrahima.seck@gmail.com', 'p.ibrahima.seck@gmail.com', 1, '573m6ik3dy0wswc8s0cc0kkc88w0c8c', '$argon2i$v=19$m=1024,t=2,p=2$enBGSkxnOXFuMnowR2Y0Wg$XhDd4QJswJpyZ1U/qm27jUzu2hC115T8DVkK3tRFpE4', '2019-04-16 09:05:34', NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";}', 'p.ibrahima.seck@gmail.com', 'p.ibrahima.seck@gmail.com', '2019-04-16 08:46:19', '2019-04-16 09:05:34', NULL, NULL, 'en_US', 'argon2i');
 
@@ -562,14 +589,15 @@ CREATE TABLE IF NOT EXISTS `sylius_channel` (
   KEY `IDX_16C8119E3101778E` (`base_currency_id`),
   KEY `IDX_16C8119EA978C17` (`default_tax_zone_id`),
   KEY `IDX_16C8119EE551C011` (`hostname`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `sylius_channel`
 --
 
 INSERT INTO `sylius_channel` (`id`, `default_locale_id`, `base_currency_id`, `default_tax_zone_id`, `code`, `name`, `color`, `description`, `enabled`, `hostname`, `created_at`, `updated_at`, `theme_name`, `tax_calculation_strategy`, `contact_email`, `skipping_shipping_step_allowed`, `skipping_payment_step_allowed`, `account_verification_required`, `shop_billing_data_id`) VALUES
-(1, 1, 2, 1, 'US_WEB', 'US Web Store', 'Wheat', NULL, 1, 'localhost', '2019-04-16 08:45:21', '2019-04-16 08:46:19', NULL, 'order_items_based', NULL, 0, 0, 1, NULL);
+(1, 2, 2, 1, 'US_WEB', 'US Web Store', '#000000', NULL, 1, 'localhost', '2019-04-16 08:45:21', '2019-04-19 14:29:45', NULL, 'order_items_based', NULL, 0, 0, 1, 1),
+(2, 3, 2, NULL, 'fr_FR', 'france', '#2027ea', NULL, 1, NULL, '2019-04-19 14:33:58', '2019-04-19 14:38:31', NULL, 'order_items_based', NULL, 0, 0, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -592,7 +620,8 @@ CREATE TABLE IF NOT EXISTS `sylius_channel_currencies` (
 
 INSERT INTO `sylius_channel_currencies` (`channel_id`, `currency_id`) VALUES
 (1, 1),
-(1, 2);
+(1, 2),
+(2, 2);
 
 -- --------------------------------------------------------
 
@@ -614,7 +643,9 @@ CREATE TABLE IF NOT EXISTS `sylius_channel_locales` (
 --
 
 INSERT INTO `sylius_channel_locales` (`channel_id`, `locale_id`) VALUES
-(1, 1);
+(1, 1),
+(1, 2),
+(2, 3);
 
 -- --------------------------------------------------------
 
@@ -632,7 +663,7 @@ CREATE TABLE IF NOT EXISTS `sylius_channel_pricing` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `product_variant_channel_idx` (`product_variant_id`,`channel_code`),
   KEY `IDX_7801820CA80EF684` (`product_variant_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=332 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=337 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `sylius_channel_pricing`
@@ -969,7 +1000,12 @@ INSERT INTO `sylius_channel_pricing` (`id`, `product_variant_id`, `price`, `orig
 (328, 328, 355, NULL, 'US_WEB'),
 (329, 329, 472, NULL, 'US_WEB'),
 (330, 330, 509, NULL, 'US_WEB'),
-(331, 331, 3000, NULL, 'US_WEB');
+(331, 331, 3000, NULL, 'US_WEB'),
+(332, 332, 1853, 1853, 'fr_FR'),
+(333, 333, 2650, 2650, 'US_WEB'),
+(334, 333, 2650, 2650, 'fr_FR'),
+(335, 334, 2423, 2423, 'US_WEB'),
+(336, 334, 2423, 2423, 'fr_FR');
 
 -- --------------------------------------------------------
 
@@ -985,14 +1021,15 @@ CREATE TABLE IF NOT EXISTS `sylius_country` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_E74256BF77153098` (`code`),
   KEY `IDX_E74256BF77153098` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `sylius_country`
 --
 
 INSERT INTO `sylius_country` (`id`, `code`, `enabled`) VALUES
-(1, 'US', 1);
+(1, 'US', 1),
+(2, 'FR', 1);
 
 -- --------------------------------------------------------
 
@@ -1153,14 +1190,16 @@ CREATE TABLE IF NOT EXISTS `sylius_locale` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_7BA1286477153098` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `sylius_locale`
 --
 
 INSERT INTO `sylius_locale` (`id`, `code`, `created_at`, `updated_at`) VALUES
-(1, 'en_US', '2019-04-16 08:45:21', '2019-04-16 08:45:21');
+(1, 'en_US', '2019-04-16 08:45:21', '2019-04-16 08:45:21'),
+(2, 'fr', '2019-04-19 14:28:23', '2019-04-19 14:28:23'),
+(3, 'fr_FR', '2019-04-19 14:36:03', '2019-04-19 14:36:03');
 
 -- --------------------------------------------------------
 
@@ -1680,7 +1719,7 @@ CREATE TABLE IF NOT EXISTS `sylius_product` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_677B9B7477153098` (`code`),
   KEY `IDX_677B9B74731E505` (`main_taxon_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `sylius_product`
@@ -1747,7 +1786,10 @@ INSERT INTO `sylius_product` (`id`, `main_taxon_id`, `code`, `created_at`, `upda
 (58, 7, '105de7d3-a013-38e5-b0be-cc1a09d243b9', '2019-04-11 05:47:21', '2019-04-16 08:45:40', 1, 'match', 3),
 (59, 7, '037a5711-22a0-3ee9-928f-ddde9208857a', '2019-04-12 03:06:20', '2019-04-16 08:45:38', 1, 'match', 0),
 (60, 6, '3a457321-1d59-3de2-ab5f-e9077aa55930', '2019-04-14 17:15:05', '2019-04-16 08:45:38', 1, 'match', 0),
-(61, NULL, 'V001', '2019-04-16 09:31:03', '2019-04-16 09:31:19', 1, 'choice', 0);
+(61, NULL, 'V001', '2019-04-16 09:31:03', '2019-04-16 09:31:19', 1, 'choice', 0),
+(62, NULL, 'paddle-3-verrines-so-apero', '2019-04-19 14:57:27', '2019-04-19 14:57:27', 1, 'choice', 0),
+(63, 11, 'Paddle6VerrinesSoApero', '2019-04-19 15:56:30', '2019-04-19 15:56:30', 1, 'choice', 0),
+(64, NULL, 'Paddle3ramequinsSoApero', '2019-04-19 16:07:01', '2019-04-19 16:07:02', 1, 'choice', 0);
 
 -- --------------------------------------------------------
 
@@ -1873,14 +1915,15 @@ CREATE TABLE IF NOT EXISTS `sylius_product_association_type_translation` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `sylius_product_association_type_translation_uniq_trans` (`translatable_id`,`locale`),
   KEY `IDX_4F618E52C2AC5D3` (`translatable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `sylius_product_association_type_translation`
 --
 
 INSERT INTO `sylius_product_association_type_translation` (`id`, `translatable_id`, `name`, `locale`) VALUES
-(1, 1, 'Similar products', 'en_US');
+(1, 1, 'Similar products', 'en_US'),
+(2, 1, NULL, 'fr_FR');
 
 -- --------------------------------------------------------
 
@@ -2211,7 +2254,11 @@ INSERT INTO `sylius_product_channels` (`product_id`, `channel_id`) VALUES
 (58, 1),
 (59, 1),
 (60, 1),
-(61, 1);
+(61, 1),
+(62, 2),
+(63, 1),
+(63, 2),
+(64, 2);
 
 -- --------------------------------------------------------
 
@@ -2590,7 +2637,7 @@ CREATE TABLE IF NOT EXISTS `sylius_product_review` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
   `author_id` int(11) NOT NULL,
-  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `rating` int(11) NOT NULL,
   `comment` longtext COLLATE utf8_unicode_ci,
   `status` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -2767,7 +2814,7 @@ CREATE TABLE IF NOT EXISTS `sylius_product_translation` (
   UNIQUE KEY `UNIQ_105A9084180C698989D9B62` (`locale`,`slug`),
   UNIQUE KEY `sylius_product_translation_uniq_trans` (`translatable_id`,`locale`),
   KEY `IDX_105A9082C2AC5D3` (`translatable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `sylius_product_translation`
@@ -2834,7 +2881,12 @@ INSERT INTO `sylius_product_translation` (`id`, `translatable_id`, `name`, `slug
 (58, 58, 'T-Shirt \"provident\"', 't-shirt-provident', 'Possimus error nostrum architecto eum et iusto enim. Culpa illo sit hic accusamus. Fuga aspernatur necessitatibus nemo alias enim voluptate recusandae rerum.\n\nVoluptatum consequatur ut omnis natus vel deserunt ut. Nulla voluptas sit velit cupiditate repellat iure. Molestiae culpa enim veritatis qui totam eaque.\n\nQuisquam porro dolores unde sed. Ut accusantium debitis eum in ex dolorem autem. Culpa molestiae molestias quidem neque at quia libero.', NULL, NULL, 'Non magnam et voluptatem autem id ut. Est sed ut non in.', 'en_US'),
 (59, 59, 'T-Shirt \"fuga\"', 't-shirt-fuga', 'Sed soluta doloremque qui quas velit sed ea sunt. Quas eius ut rerum alias. Repellat saepe voluptas sunt molestiae voluptas sapiente.\n\nEnim consequuntur minus error neque magni. Quis expedita tempore porro.\n\nNostrum suscipit sed suscipit aut vitae non voluptas quia. Tempora culpa voluptatem voluptas non possimus. Repudiandae illum commodi voluptatem at provident officia nulla.', NULL, NULL, 'Accusantium delectus modi aut doloremque eum perspiciatis tempora. Blanditiis saepe repudiandae et officiis dolores. Laboriosam eveniet ipsum quia.', 'en_US'),
 (60, 60, 'T-Shirt \"enim\"', 't-shirt-enim', 'Sed qui natus et provident. Ex earum dolore nam velit. Et ipsa natus neque.\n\nSit quia officiis sit tempore fugit quis harum odit. Facere est error laboriosam praesentium. Et error eveniet qui est ut nobis. Commodi repellat officia quos et non et fuga optio.\n\nVelit in nobis sed officiis perspiciatis minus. Sint voluptas ipsum ducimus ut non dolorem. Aperiam facere rerum eveniet doloremque occaecati non facere est. Tempore ut unde ut necessitatibus.', NULL, NULL, 'Error mollitia eaque non vero. Quam beatae blanditiis dolore tempora necessitatibus totam facilis. Excepturi nulla animi voluptatem earum. Quo nobis consequatur autem. Expedita magnam aut asperiores.', 'en_US'),
-(61, 61, 'Goodride RP28 205/55 R16 91V', 'goodride-rp28-205-55-r16-91v', 'Largeur: 205\r\nHauteur: 55\r\nType: R\r\nDiamètre: 16\r\nIndice de charge: 91\r\nIndice de vitesse: V\r\nType: Auto\r\nSaison: Pneus été\r\nProtection jante:Non\r\nPneus Run Flat: Non', NULL, NULL, 'Largeur: 205\r\nHauteur: 55\r\nType: R\r\nDiamètre: 16\r\nIndice de charge: 91\r\nIndice de vitesse: V\r\nType: Auto\r\nSaison: Pneus été\r\nProtection jante:Non\r\nPneus Run Flat: Non', 'en_US');
+(61, 61, 'Goodride RP28 205/55 R16 91V', 'goodride-rp28-205-55-r16-91v', 'Largeur: 205\r\nHauteur: 55\r\nType: R\r\nDiamètre: 16\r\nIndice de charge: 91\r\nIndice de vitesse: V\r\nType: Auto\r\nSaison: Pneus été\r\nProtection jante:Non\r\nPneus Run Flat: Non', NULL, NULL, 'Largeur: 205\r\nHauteur: 55\r\nType: R\r\nDiamètre: 16\r\nIndice de charge: 91\r\nIndice de vitesse: V\r\nType: Auto\r\nSaison: Pneus été\r\nProtection jante:Non\r\nPneus Run Flat: Non', 'en_US'),
+(62, 62, 'Paddle 3 Verrines So Apéro !', 'paddle-3-verrines-so-apero', 'Craquez pour des apéros verrines !Vous êtes amateurs d\'apéritifs dînatoires et notamment de Verrines. Découvrez le Paddle 3 verrines So Apéro ! Disposez vos 3 verrines 12 cl sur l\'élégant Paddle So Apéro ! pour transporter et présenter vos verrines sur la table de votre apéritif. Succès garanti !Le Paddle à Verrines So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.Le bois étant une matière vivante, l\'aspect naturel du Paddle à Verrines So Apéro ! peut sensiblement varier selon les lots de bois employés. Avec le temps, il aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.Dimensions : 39 x 9 x 2 cm. Poids 1,4 kg.Les « plus » produit :LIVRAISON 24-48 h GRATUITE (France Métropolitaine)Fabrication françaiseConvivialité3 verrines de 12 cl', 'Paddle Verrines', NULL, 'Paddle So Apéro ! pour transporter et présenter vos verrines sur la table de votre apéritif. Succès garanti !Le Paddle à Verrines So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.', 'fr_FR'),
+(63, 63, 'Paddle 6 Verrines So Apéro !', 'paddle-6-verrines-so-apero', 'Craquez pour des apéros verrines !Vous êtes amateurs d\'apéritifs dînatoires et notamment de Verrines. Découvrez le Paddle à verrines So Apéro ! Disposez vos 6 verrines 12 cl sur l\'élégant Paddle So Apéro ! pour transporter et présenter vos verrines sur la table de votre apéritif. Succès garanti !Le Paddle à Verrines So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.Le bois étant une matière vivante, l\'aspect naturel du Paddle à Verrines So Apéro ! peut sensiblement varier selon les lots de bois employés. Avec le temps, il aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.Dimensions : 59 x 9 x 2 cm. Poids 1,4 kg.Les « plus » produit :EXPÉDITION 24-48 h GRATUITE (France Métropolitaine)Fabrication françaiseConvivialité6 verrines de 12 cl', NULL, NULL, NULL, 'en_US'),
+(64, 63, 'Paddle 6 Verrines So Apéro !', 'paddle-6-verrines-so-apero', 'Craquez pour des apéros verrines !Vous êtes amateurs d\'apéritifs dînatoires et notamment de Verrines. Découvrez le Paddle à verrines So Apéro ! Disposez vos 6 verrines 12 cl sur l\'élégant Paddle So Apéro ! pour transporter et présenter vos verrines sur la table de votre apéritif. Succès garanti !Le Paddle à Verrines So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.Le bois étant une matière vivante, l\'aspect naturel du Paddle à Verrines So Apéro ! peut sensiblement varier selon les lots de bois employés. Avec le temps, il aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.Dimensions : 59 x 9 x 2 cm. Poids 1,4 kg.Les « plus » produit :EXPÉDITION 24-48 h GRATUITE (France Métropolitaine)Fabrication françaiseConvivialité6 verrines de 12 cl', NULL, NULL, NULL, 'fr_FR'),
+(65, 64, 'Paddle3ramequinsSoApero', 'paddle3ramequinssoapero', 'Servez, présentez, dégustez !Indispensable sur la table de l\'apéro. Découvrez le Paddle 3 ramequins So Apéro ! Disposez vos 3 ramequins sur l\'élégant Paddle So Apéro ! pour transporter et présenter vos grignotages sur la table de votre apéritif. Succès garanti !Le Paddle 3 ramequins So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.Le bois étant une matière vivante, l\'aspect naturel du Paddle à Verrines So Apéro ! peut sensiblement varier selon les lots de bois employés. Avec le temps, il aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.Dimensions :  39 x 9 x 2 cm. Poids 650g.Les «plus» produit :LIVRAISON 24-48 h GRATUITE (France Métropolitaine)Fabrication françaiseConvivialité3 ramequins porcelaine 21 cl', NULL, NULL, NULL, 'en_US'),
+(66, 64, 'Paddle3ramequinsSoApero', 'paddle3ramequinssoapero', 'Servez, présentez, dégustez !Indispensable sur la table de l\'apéro. Découvrez le Paddle 3 ramequins So Apéro ! Disposez vos 3 ramequins sur l\'élégant Paddle So Apéro ! pour transporter et présenter vos grignotages sur la table de votre apéritif. Succès garanti !Le Paddle 3 ramequins So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.Le bois étant une matière vivante, l\'aspect naturel du Paddle à Verrines So Apéro ! peut sensiblement varier selon les lots de bois employés. Avec le temps, il aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.Dimensions :  39 x 9 x 2 cm. Poids 650g.Les «plus» produit :LIVRAISON 24-48 h GRATUITE (France Métropolitaine)Fabrication françaiseConvivialité3 ramequins porcelaine 21 cl', NULL, NULL, 'Servez, présentez, dégustez !Indispensable sur la table de l\'apéro. Découvrez le Paddle 3 ramequins So Apéro ! Disposez vos 3 ramequins sur l\'élégant Paddle So Apéro ! pour transporter et présenter vos grignotages sur la table de votre apéritif. Succès garanti !Le Paddle 3 ramequins So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.Le bois étant une matière vivante, l\'aspect naturel du Paddle à Verrines So Apéro ! peut sensiblement varier selon les lots de bois employés. Avec le temps, il aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.Dimensions :  39 x 9 x 2 cm. Poids 650g.Les «plus» produit :LIVRAISON 24-48 h GRATUITE (France Métropolitaine)Fabrication françaiseConvivialité3 ramequins porcelaine 21 cl', 'fr_FR');
 
 -- --------------------------------------------------------
 
@@ -2866,7 +2918,7 @@ CREATE TABLE IF NOT EXISTS `sylius_product_variant` (
   KEY `IDX_A29B5234584665A` (`product_id`),
   KEY `IDX_A29B5239DF894ED` (`tax_category_id`),
   KEY `IDX_A29B5239E2D1A41` (`shipping_category_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=332 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=335 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `sylius_product_variant`
@@ -3204,7 +3256,10 @@ INSERT INTO `sylius_product_variant` (`id`, `product_id`, `tax_category_id`, `sh
 (328, 60, NULL, NULL, '3a457321-1d59-3de2-ab5f-e9077aa55930-variant-12', '2019-04-16 08:45:38', '2019-04-16 08:45:38', 12, 1, 0, 8, 0, NULL, NULL, NULL, NULL, 1),
 (329, 60, NULL, NULL, '3a457321-1d59-3de2-ab5f-e9077aa55930-variant-13', '2019-04-16 08:45:38', '2019-04-16 08:45:38', 13, 1, 0, 9, 0, NULL, NULL, NULL, NULL, 1),
 (330, 60, NULL, NULL, '3a457321-1d59-3de2-ab5f-e9077aa55930-variant-14', '2019-04-16 08:45:38', '2019-04-16 08:45:38', 14, 1, 0, 7, 0, NULL, NULL, NULL, NULL, 1),
-(331, 61, NULL, NULL, 'V001', '2019-04-16 09:31:03', '2019-04-16 09:31:19', 0, 1, 0, 100, 0, NULL, NULL, NULL, NULL, 1);
+(331, 61, NULL, NULL, 'V001', '2019-04-16 09:31:03', '2019-04-16 09:31:19', 0, 1, 0, 100, 0, NULL, NULL, NULL, NULL, 1),
+(332, 62, NULL, NULL, 'paddle-3-verrines-so-apero', '2019-04-19 14:57:27', '2019-04-19 14:57:27', 0, 1, 0, 0, 0, NULL, NULL, NULL, NULL, 1),
+(333, 63, NULL, NULL, 'Paddle6VerrinesSoApero', '2019-04-19 15:56:30', '2019-04-19 15:56:30', 0, 1, 0, 0, 0, NULL, NULL, NULL, NULL, 1),
+(334, 64, NULL, NULL, 'Paddle3ramequinsSoApero', '2019-04-19 16:07:01', '2019-04-19 16:07:02', 0, 1, 0, 0, 0, NULL, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -3782,7 +3837,7 @@ CREATE TABLE IF NOT EXISTS `sylius_product_variant_translation` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `sylius_product_variant_translation_uniq_trans` (`translatable_id`,`locale`),
   KEY `IDX_8DC18EDC2C2AC5D3` (`translatable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=332 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=335 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `sylius_product_variant_translation`
@@ -4119,7 +4174,10 @@ INSERT INTO `sylius_product_variant_translation` (`id`, `translatable_id`, `name
 (328, 328, 'est', 'en_US'),
 (329, 329, 'est', 'en_US'),
 (330, 330, 'tempora', 'en_US'),
-(331, 331, NULL, 'en_US');
+(331, 331, NULL, 'en_US'),
+(332, 332, NULL, 'fr_FR'),
+(333, 333, NULL, 'fr_FR'),
+(334, 334, NULL, 'fr_FR');
 
 -- --------------------------------------------------------
 
@@ -4463,7 +4521,15 @@ CREATE TABLE IF NOT EXISTS `sylius_shop_billing_data` (
   `city` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `postcode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Déchargement des données de la table `sylius_shop_billing_data`
+--
+
+INSERT INTO `sylius_shop_billing_data` (`id`, `company`, `tax_id`, `country_code`, `street`, `city`, `postcode`) VALUES
+(1, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -4547,20 +4613,25 @@ CREATE TABLE IF NOT EXISTS `sylius_taxon` (
   UNIQUE KEY `UNIQ_CFD811CA77153098` (`code`),
   KEY `IDX_CFD811CAA977936C` (`tree_root`),
   KEY `IDX_CFD811CA727ACA70` (`parent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `sylius_taxon`
 --
 
 INSERT INTO `sylius_taxon` (`id`, `tree_root`, `parent_id`, `code`, `tree_left`, `tree_right`, `tree_level`, `position`, `created_at`, `updated_at`) VALUES
-(1, 1, NULL, 'category', 1, 14, 0, 0, '2019-04-16 08:45:24', '2019-04-16 08:45:24'),
-(2, 1, 1, 'mugs', 2, 3, 1, 0, '2019-04-16 08:45:24', '2019-04-16 08:45:24'),
-(3, 1, 1, 'stickers', 4, 5, 1, 1, '2019-04-16 08:45:30', '2019-04-16 08:45:30'),
-(4, 1, 1, 'books', 6, 7, 1, 2, '2019-04-16 08:45:32', '2019-04-16 08:45:32'),
-(5, 1, 1, 't_shirts', 8, 13, 1, 3, '2019-04-16 08:45:33', '2019-04-16 08:45:33'),
-(6, 1, 5, 'mens_t_shirts', 9, 10, 2, 0, '2019-04-16 08:45:33', '2019-04-16 08:45:33'),
-(7, 1, 5, 'womens_t_shirts', 11, 12, 2, 1, '2019-04-16 08:45:33', '2019-04-16 08:45:33');
+(1, 1, NULL, 'category', 1, 22, 0, 0, '2019-04-16 08:45:24', '2019-04-16 08:45:24'),
+(2, 1, 1, 'mugs', 12, 13, 1, 0, '2019-04-16 08:45:24', '2019-04-16 08:45:24'),
+(3, 1, 1, 'stickers', 12, 13, 1, 5, '2019-04-16 08:45:30', '2019-04-16 08:45:30'),
+(4, 1, 1, 'books', 14, 15, 1, 7, '2019-04-16 08:45:32', '2019-04-16 08:45:32'),
+(5, 1, 1, 't_shirts', 16, 21, 1, 8, '2019-04-16 08:45:33', '2019-04-16 08:45:33'),
+(6, 1, 5, 'mens_t_shirts', 17, 18, 2, 0, '2019-04-16 08:45:33', '2019-04-16 08:45:33'),
+(7, 1, 5, 'womens_t_shirts', 19, 20, 2, 1, '2019-04-16 08:45:33', '2019-04-16 08:45:33'),
+(9, 1, 1, 'guillotine_saucisson', 10, 11, 1, 6, '2019-04-19 14:34:33', '2019-04-19 14:43:16'),
+(10, 1, 1, 'box_gourmandes', 8, 9, 1, 4, '2019-04-19 14:47:34', '2019-04-19 14:47:42'),
+(11, 1, 1, 'Paddles', 6, 7, 1, 3, '2019-04-19 14:48:11', '2019-04-19 14:48:22'),
+(12, 1, 1, 'Presentation_service', 4, 5, 1, 2, '2019-04-19 14:49:09', '2019-04-19 14:49:18'),
+(13, 1, 1, 'Accessoires', 2, 3, 1, 1, '2019-04-19 14:49:49', '2019-04-19 14:51:02');
 
 -- --------------------------------------------------------
 
@@ -4596,7 +4667,7 @@ CREATE TABLE IF NOT EXISTS `sylius_taxon_translation` (
   UNIQUE KEY `slug_uidx` (`locale`,`slug`),
   UNIQUE KEY `sylius_taxon_translation_uniq_trans` (`translatable_id`,`locale`),
   KEY `IDX_1487DFCF2C2AC5D3` (`translatable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `sylius_taxon_translation`
@@ -4614,7 +4685,13 @@ INSERT INTO `sylius_taxon_translation` (`id`, `translatable_id`, `name`, `slug`,
 (9, 6, 'Men', 't-shirts/men', 'Quia rerum eveniet quisquam earum. Officia assumenda aspernatur aut. Et aut maxime aperiam aut. Explicabo repudiandae laudantium temporibus.', 'en_US'),
 (10, 6, 'Hommes', 't-shirts/hommes', 'Perferendis voluptas delectus sit sit. Voluptatem minus rerum quidem aut quos sit ducimus. Enim distinctio qui et.', 'fr_FR'),
 (11, 7, 'Women', 't-shirts/women', 'Doloremque dignissimos voluptas eius aut laboriosam sit. Quas quae eaque inventore sint autem. Voluptatem nobis in tempore quasi. Amet omnis nulla dolore.', 'en_US'),
-(12, 7, 'Hommes', 't-shirts/femmes', 'Modi aperiam doloribus delectus possimus delectus ut voluptas. Aut et sint reiciendis molestias esse. Dolor ut maiores distinctio quia. Totam doloribus velit est laboriosam perferendis veritatis.', 'fr_FR');
+(12, 7, 'Hommes', 't-shirts/femmes', 'Modi aperiam doloribus delectus possimus delectus ut voluptas. Aut et sint reiciendis molestias esse. Dolor ut maiores distinctio quia. Totam doloribus velit est laboriosam perferendis veritatis.', 'fr_FR'),
+(15, 9, 'guillotine à saucisson', 'guillotine-a-saucisson', NULL, 'fr'),
+(16, 9, 'Guillotine à saucisson', 'guillotine-a-saucisson', NULL, 'fr_FR'),
+(17, 10, 'Box gourmandes', 'box-gourmandes', NULL, 'fr_FR'),
+(18, 11, 'Paddles', 'paddles', NULL, 'fr_FR'),
+(19, 12, 'Présentation/service', 'presentation-service', NULL, 'fr_FR'),
+(20, 13, 'Accessoires', 'accessoires', NULL, 'fr_FR');
 
 -- --------------------------------------------------------
 
