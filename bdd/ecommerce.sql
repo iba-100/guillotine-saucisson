@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  ven. 19 avr. 2019 à 14:16
+-- Généré le :  ven. 19 avr. 2019 à 15:12
 -- Version du serveur :  5.7.21
 -- Version de PHP :  7.2.4
 
@@ -73,6 +73,182 @@ INSERT INTO `migration_versions` (`version`, `executed_at`) VALUES
 ('20180102140039', '2019-04-16 08:42:23'),
 ('20190109095211', '2019-04-16 08:42:25'),
 ('20190109160409', '2019-04-16 08:42:26');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `odiseo_blog_article`
+--
+
+DROP TABLE IF EXISTS `odiseo_blog_article`;
+CREATE TABLE IF NOT EXISTS `odiseo_blog_article` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `enabled` tinyint(1) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `archived_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_EA96598A77153098` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Déchargement des données de la table `odiseo_blog_article`
+--
+
+INSERT INTO `odiseo_blog_article` (`id`, `code`, `enabled`, `created_at`, `updated_at`, `archived_at`) VALUES
+(1, 'first-article', 1, '2019-04-19 14:12:16', '2019-04-19 14:25:38', NULL),
+(2, 'second-article', 1, '2019-04-19 14:16:07', '2019-04-19 14:26:55', NULL),
+(3, 'seen-on-tv', 1, '2019-04-19 14:30:02', '2019-04-19 14:30:02', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `odiseo_blog_articles_categories`
+--
+
+DROP TABLE IF EXISTS `odiseo_blog_articles_categories`;
+CREATE TABLE IF NOT EXISTS `odiseo_blog_articles_categories` (
+  `article_id` int(11) NOT NULL,
+  `category_id` int(11) NOT NULL,
+  PRIMARY KEY (`article_id`,`category_id`),
+  KEY `IDX_F090056C7294869C` (`article_id`),
+  KEY `IDX_F090056C12469DE2` (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Déchargement des données de la table `odiseo_blog_articles_categories`
+--
+
+INSERT INTO `odiseo_blog_articles_categories` (`article_id`, `category_id`) VALUES
+(1, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `odiseo_blog_articles_channels`
+--
+
+DROP TABLE IF EXISTS `odiseo_blog_articles_channels`;
+CREATE TABLE IF NOT EXISTS `odiseo_blog_articles_channels` (
+  `article_id` int(11) NOT NULL,
+  `channel_id` int(11) NOT NULL,
+  PRIMARY KEY (`article_id`,`channel_id`),
+  KEY `IDX_A4C0CF5F7294869C` (`article_id`),
+  KEY `IDX_A4C0CF5F72F5A1AA` (`channel_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Déchargement des données de la table `odiseo_blog_articles_channels`
+--
+
+INSERT INTO `odiseo_blog_articles_channels` (`article_id`, `channel_id`) VALUES
+(1, 1),
+(2, 1),
+(3, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `odiseo_blog_article_category`
+--
+
+DROP TABLE IF EXISTS `odiseo_blog_article_category`;
+CREATE TABLE IF NOT EXISTS `odiseo_blog_article_category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `enabled` tinyint(1) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_AA59457F77153098` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Déchargement des données de la table `odiseo_blog_article_category`
+--
+
+INSERT INTO `odiseo_blog_article_category` (`id`, `code`, `enabled`, `created_at`, `updated_at`) VALUES
+(2, 'last-articles', 1, '2019-04-19 14:21:33', '2019-04-19 14:21:34');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `odiseo_blog_article_category_translation`
+--
+
+DROP TABLE IF EXISTS `odiseo_blog_article_category_translation`;
+CREATE TABLE IF NOT EXISTS `odiseo_blog_article_category_translation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `translatable_id` int(11) NOT NULL,
+  `slug` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `locale` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `odiseo_blog_article_category_translation_uniq_trans` (`translatable_id`,`locale`),
+  KEY `IDX_2F9EF9492C2AC5D3` (`translatable_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Déchargement des données de la table `odiseo_blog_article_category_translation`
+--
+
+INSERT INTO `odiseo_blog_article_category_translation` (`id`, `translatable_id`, `slug`, `title`, `locale`) VALUES
+(2, 2, 'last-articles', 'Last articles', 'en_US');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `odiseo_blog_article_image`
+--
+
+DROP TABLE IF EXISTS `odiseo_blog_article_image`;
+CREATE TABLE IF NOT EXISTS `odiseo_blog_article_image` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `owner_id` int(11) DEFAULT NULL,
+  `type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `path` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_F97399C97E3C61F9` (`owner_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Déchargement des données de la table `odiseo_blog_article_image`
+--
+
+INSERT INTO `odiseo_blog_article_image` (`id`, `owner_id`, `type`, `path`) VALUES
+(1, 1, NULL, 'e5/34/d12a19321e45a7d45bed0c0f8da9.jpeg'),
+(2, 2, NULL, '58/5a/5531628e4820aab07a6df228177c.jpeg');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `odiseo_blog_article_translation`
+--
+
+DROP TABLE IF EXISTS `odiseo_blog_article_translation`;
+CREATE TABLE IF NOT EXISTS `odiseo_blog_article_translation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `translatable_id` int(11) NOT NULL,
+  `slug` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `content` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `metaKeywords` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `metaDescription` longtext COLLATE utf8_unicode_ci,
+  `locale` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `odiseo_blog_article_translation_uniq_trans` (`translatable_id`,`locale`),
+  KEY `IDX_7A606A2C2AC5D3` (`translatable_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Déchargement des données de la table `odiseo_blog_article_translation`
+--
+
+INSERT INTO `odiseo_blog_article_translation` (`id`, `translatable_id`, `slug`, `title`, `content`, `metaKeywords`, `metaDescription`, `locale`) VALUES
+(1, 1, 'first-article', 'First article !', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ex mi, interdum malesuada porttitor sed, feugiat sit amet nulla. Etiam auctor lacus purus, egestas sodales risus pulvinar ac. Cras ac hendrerit lorem. Cras pharetra magna tempor consectetur iaculis. Cras imperdiet tempor urna, efficitur vehicula magna faucibus a. Nam a magna risus. Aliquam porta ipsum eu eros mattis, a sollicitudin justo sodales. Pellentesque vel malesuada justo.', NULL, NULL, 'en_US'),
+(2, 2, 'second-article', 'Second article !', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ex mi, interdum malesuada porttitor sed, feugiat sit amet nulla. Etiam auctor lacus purus, egestas sodales risus pulvinar ac. Cras ac hendrerit lorem. Cras pharetra magna tempor consectetur iaculis. Cras imperdiet tempor urna, efficitur vehicula magna faucibus a. Nam a magna risus. Aliquam porta ipsum eu eros mattis, a sollicitudin justo sodales. Pellentesque vel malesuada justo.', NULL, NULL, 'en_US'),
+(3, 3, 'seen-on-tv', 'Seen on tv !', 'Don\'t miss us at the half-time of the soccer world championship !!', NULL, NULL, 'en_US');
 
 -- --------------------------------------------------------
 
@@ -551,7 +727,7 @@ CREATE TABLE IF NOT EXISTS `sylius_admin_user` (
 --
 
 INSERT INTO `sylius_admin_user` (`id`, `username`, `username_canonical`, `enabled`, `salt`, `password`, `last_login`, `password_reset_token`, `password_requested_at`, `email_verification_token`, `verified_at`, `locked`, `expires_at`, `credentials_expire_at`, `roles`, `email`, `email_canonical`, `created_at`, `updated_at`, `first_name`, `last_name`, `locale_code`, `encoder_name`) VALUES
-(1, 'sylius', 'sylius', 1, 'kuxi5o4dtm8o44kss0w8gs88848o4og', '$argon2i$v=19$m=1024,t=2,p=2$Uy8wMEtMRTJLVTZ3ZWt4VQ$ENG1PgKb0tobGQKS/wAdsy32ZlOh75+e0GUW/xYQRSA', '2019-04-19 15:52:40', NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";}', 'sylius@example.com', 'sylius@example.com', '2019-04-16 08:45:24', '2019-04-19 15:52:40', 'John', 'Doe', 'fr_FR', 'argon2i'),
+(1, 'sylius', 'sylius', 1, 'kuxi5o4dtm8o44kss0w8gs88848o4og', '$argon2i$v=19$m=1024,t=2,p=2$Uy8wMEtMRTJLVTZ3ZWt4VQ$ENG1PgKb0tobGQKS/wAdsy32ZlOh75+e0GUW/xYQRSA', '2019-04-19 14:21:02', NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";}', 'sylius@example.com', 'sylius@example.com', '2019-04-16 08:45:24', '2019-04-19 14:21:02', 'John', 'Doe', 'fr_FR', 'argon2i'),
 (2, 'api', 'api', 1, '4hzein68fcw0g8s4s8w4sccg48sws0o', '$argon2i$v=19$m=1024,t=2,p=2$d3RDUVUzMnUzR1VwTEVvdg$S9dclEU5Vl/7csoKWC0T2BDU4VTnQ2XJJml9XpIn7pI', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:2:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";i:1;s:15:\"ROLE_API_ACCESS\";}', 'api@example.com', 'api@example.com', '2019-04-16 08:45:24', '2019-04-16 08:45:24', 'Luke', 'Brushwood', 'en_US', 'argon2i'),
 (3, 'p.ibrahima.seck@gmail.com', 'p.ibrahima.seck@gmail.com', 1, '573m6ik3dy0wswc8s0cc0kkc88w0c8c', '$argon2i$v=19$m=1024,t=2,p=2$enBGSkxnOXFuMnowR2Y0Wg$XhDd4QJswJpyZ1U/qm27jUzu2hC115T8DVkK3tRFpE4', '2019-04-16 09:05:34', NULL, NULL, NULL, NULL, 0, NULL, NULL, 'a:1:{i:0;s:26:\"ROLE_ADMINISTRATION_ACCESS\";}', 'p.ibrahima.seck@gmail.com', 'p.ibrahima.seck@gmail.com', '2019-04-16 08:46:19', '2019-04-16 09:05:34', NULL, NULL, 'en_US', 'argon2i');
 
@@ -596,7 +772,7 @@ CREATE TABLE IF NOT EXISTS `sylius_channel` (
 --
 
 INSERT INTO `sylius_channel` (`id`, `default_locale_id`, `base_currency_id`, `default_tax_zone_id`, `code`, `name`, `color`, `description`, `enabled`, `hostname`, `created_at`, `updated_at`, `theme_name`, `tax_calculation_strategy`, `contact_email`, `skipping_shipping_step_allowed`, `skipping_payment_step_allowed`, `account_verification_required`, `shop_billing_data_id`) VALUES
-(1, 2, 2, 1, 'US_WEB', 'US Web Store', '#000000', NULL, 1, 'localhost', '2019-04-16 08:45:21', '2019-04-19 14:29:45', NULL, 'order_items_based', NULL, 0, 0, 1, 1),
+(1, 1, 2, 1, 'US_WEB', 'US Web Store', '#000000', NULL, 1, 'localhost', '2019-04-16 08:45:21', '2019-04-19 14:58:01', NULL, 'order_items_based', NULL, 0, 0, 1, 1),
 (2, 3, 2, NULL, 'fr_FR', 'france', '#2027ea', NULL, 1, NULL, '2019-04-19 14:33:58', '2019-04-19 14:38:31', NULL, 'order_items_based', NULL, 0, 0, 1, 2);
 
 -- --------------------------------------------------------
@@ -1000,7 +1176,7 @@ INSERT INTO `sylius_channel_pricing` (`id`, `product_variant_id`, `price`, `orig
 (328, 328, 355, NULL, 'US_WEB'),
 (329, 329, 472, NULL, 'US_WEB'),
 (330, 330, 509, NULL, 'US_WEB'),
-(331, 331, 3000, NULL, 'US_WEB'),
+(331, 331, 4950, NULL, 'US_WEB'),
 (332, 332, 1853, 1853, 'fr_FR'),
 (333, 333, 2650, 2650, 'US_WEB'),
 (334, 333, 2650, 2650, 'fr_FR'),
@@ -2274,7 +2450,7 @@ CREATE TABLE IF NOT EXISTS `sylius_product_image` (
   `path` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_88C64B2D7E3C61F9` (`owner_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `sylius_product_image`
@@ -2401,7 +2577,8 @@ INSERT INTO `sylius_product_image` (`id`, `owner_id`, `type`, `path`) VALUES
 (118, 59, 'thumbnail', 'c5/33/8d149e963c16e17d8f82ba3865c1.jpeg'),
 (119, 60, 'main', 'e2/f6/95b923542e061eb8ce2aff0f09bf.jpeg'),
 (120, 60, 'thumbnail', '77/4d/3827776e7bd51b6dc57f643b24be.jpeg'),
-(121, 61, NULL, '9d/53/8cbb1a4fe8892eb40516629eb79f.jpeg');
+(122, 63, NULL, '44/be/7af6e7be25c0f7089d3d2e090113.jpeg'),
+(123, 61, NULL, 'b6/6d/d9b1dbcd8f54416f3ebbbc94c505.jpeg');
 
 -- --------------------------------------------------------
 
@@ -2881,11 +3058,12 @@ INSERT INTO `sylius_product_translation` (`id`, `translatable_id`, `name`, `slug
 (58, 58, 'T-Shirt \"provident\"', 't-shirt-provident', 'Possimus error nostrum architecto eum et iusto enim. Culpa illo sit hic accusamus. Fuga aspernatur necessitatibus nemo alias enim voluptate recusandae rerum.\n\nVoluptatum consequatur ut omnis natus vel deserunt ut. Nulla voluptas sit velit cupiditate repellat iure. Molestiae culpa enim veritatis qui totam eaque.\n\nQuisquam porro dolores unde sed. Ut accusantium debitis eum in ex dolorem autem. Culpa molestiae molestias quidem neque at quia libero.', NULL, NULL, 'Non magnam et voluptatem autem id ut. Est sed ut non in.', 'en_US'),
 (59, 59, 'T-Shirt \"fuga\"', 't-shirt-fuga', 'Sed soluta doloremque qui quas velit sed ea sunt. Quas eius ut rerum alias. Repellat saepe voluptas sunt molestiae voluptas sapiente.\n\nEnim consequuntur minus error neque magni. Quis expedita tempore porro.\n\nNostrum suscipit sed suscipit aut vitae non voluptas quia. Tempora culpa voluptatem voluptas non possimus. Repudiandae illum commodi voluptatem at provident officia nulla.', NULL, NULL, 'Accusantium delectus modi aut doloremque eum perspiciatis tempora. Blanditiis saepe repudiandae et officiis dolores. Laboriosam eveniet ipsum quia.', 'en_US'),
 (60, 60, 'T-Shirt \"enim\"', 't-shirt-enim', 'Sed qui natus et provident. Ex earum dolore nam velit. Et ipsa natus neque.\n\nSit quia officiis sit tempore fugit quis harum odit. Facere est error laboriosam praesentium. Et error eveniet qui est ut nobis. Commodi repellat officia quos et non et fuga optio.\n\nVelit in nobis sed officiis perspiciatis minus. Sint voluptas ipsum ducimus ut non dolorem. Aperiam facere rerum eveniet doloremque occaecati non facere est. Tempore ut unde ut necessitatibus.', NULL, NULL, 'Error mollitia eaque non vero. Quam beatae blanditiis dolore tempora necessitatibus totam facilis. Excepturi nulla animi voluptatem earum. Quo nobis consequatur autem. Expedita magnam aut asperiores.', 'en_US'),
-(61, 61, 'Goodride RP28 205/55 R16 91V', 'goodride-rp28-205-55-r16-91v', 'Largeur: 205\r\nHauteur: 55\r\nType: R\r\nDiamètre: 16\r\nIndice de charge: 91\r\nIndice de vitesse: V\r\nType: Auto\r\nSaison: Pneus été\r\nProtection jante:Non\r\nPneus Run Flat: Non', NULL, NULL, 'Largeur: 205\r\nHauteur: 55\r\nType: R\r\nDiamètre: 16\r\nIndice de charge: 91\r\nIndice de vitesse: V\r\nType: Auto\r\nSaison: Pneus été\r\nProtection jante:Non\r\nPneus Run Flat: Non', 'en_US'),
+(61, 61, 'GUILLOTINE À SAUCISSON - L\'ORIGINALE', 'goodride-rp28-205-55-r16-91v', 'La star de vos apéros entre amis !\r\n\r\nAbandonnez la planche et le couteau. La Guillotine à saucisson est toujours prête à l\'emploi. Facile, rapide, sans effort, elle participera à la réussite de vos apéros entre amis.\r\n\r\nLa Guillotine à saucisson est fabriquée en bois brut non traité et non teinté pour respecter les produits alimentaires tant d\'un point de vue bactériologique que gustatif.\r\n\r\nLe bois étant une matière vivante, l\'aspect naturel de la Guillotine à saucisson peut sensiblement varier selon les lots de bois employés. Avec le temps, elle aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.\r\n\r\nDimensions : 280 x 160 x 90 mm', NULL, NULL, 'EXPEDITION GRATUITE 24-48 h (France Métropolitaine)\r\nProduit inédit \r\nEfficacité (tranches fines) \r\nConvivialité\r\nFabrication 100 % française', 'en_US'),
 (62, 62, 'Paddle 3 Verrines So Apéro !', 'paddle-3-verrines-so-apero', 'Craquez pour des apéros verrines !Vous êtes amateurs d\'apéritifs dînatoires et notamment de Verrines. Découvrez le Paddle 3 verrines So Apéro ! Disposez vos 3 verrines 12 cl sur l\'élégant Paddle So Apéro ! pour transporter et présenter vos verrines sur la table de votre apéritif. Succès garanti !Le Paddle à Verrines So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.Le bois étant une matière vivante, l\'aspect naturel du Paddle à Verrines So Apéro ! peut sensiblement varier selon les lots de bois employés. Avec le temps, il aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.Dimensions : 39 x 9 x 2 cm. Poids 1,4 kg.Les « plus » produit :LIVRAISON 24-48 h GRATUITE (France Métropolitaine)Fabrication françaiseConvivialité3 verrines de 12 cl', 'Paddle Verrines', NULL, 'Paddle So Apéro ! pour transporter et présenter vos verrines sur la table de votre apéritif. Succès garanti !Le Paddle à Verrines So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.', 'fr_FR'),
 (63, 63, 'Paddle 6 Verrines So Apéro !', 'paddle-6-verrines-so-apero', 'Craquez pour des apéros verrines !Vous êtes amateurs d\'apéritifs dînatoires et notamment de Verrines. Découvrez le Paddle à verrines So Apéro ! Disposez vos 6 verrines 12 cl sur l\'élégant Paddle So Apéro ! pour transporter et présenter vos verrines sur la table de votre apéritif. Succès garanti !Le Paddle à Verrines So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.Le bois étant une matière vivante, l\'aspect naturel du Paddle à Verrines So Apéro ! peut sensiblement varier selon les lots de bois employés. Avec le temps, il aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.Dimensions : 59 x 9 x 2 cm. Poids 1,4 kg.Les « plus » produit :EXPÉDITION 24-48 h GRATUITE (France Métropolitaine)Fabrication françaiseConvivialité6 verrines de 12 cl', NULL, NULL, NULL, 'en_US'),
 (64, 63, 'Paddle 6 Verrines So Apéro !', 'paddle-6-verrines-so-apero', 'Craquez pour des apéros verrines !Vous êtes amateurs d\'apéritifs dînatoires et notamment de Verrines. Découvrez le Paddle à verrines So Apéro ! Disposez vos 6 verrines 12 cl sur l\'élégant Paddle So Apéro ! pour transporter et présenter vos verrines sur la table de votre apéritif. Succès garanti !Le Paddle à Verrines So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.Le bois étant une matière vivante, l\'aspect naturel du Paddle à Verrines So Apéro ! peut sensiblement varier selon les lots de bois employés. Avec le temps, il aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.Dimensions : 59 x 9 x 2 cm. Poids 1,4 kg.Les « plus » produit :EXPÉDITION 24-48 h GRATUITE (France Métropolitaine)Fabrication françaiseConvivialité6 verrines de 12 cl', NULL, NULL, NULL, 'fr_FR'),
-(65, 64, 'Paddle3ramequinsSoApero', 'paddle3ramequinssoapero', 'Servez, présentez, dégustez !Indispensable sur la table de l\'apéro. Découvrez le Paddle 3 ramequins So Apéro ! Disposez vos 3 ramequins sur l\'élégant Paddle So Apéro ! pour transporter et présenter vos grignotages sur la table de votre apéritif. Succès garanti !Le Paddle 3 ramequins So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.Le bois étant une matière vivante, l\'aspect naturel du Paddle à Verrines So Apéro ! peut sensiblement varier selon les lots de bois employés. Avec le temps, il aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.Dimensions :  39 x 9 x 2 cm. Poids 650g.Les «plus» produit :LIVRAISON 24-48 h GRATUITE (France Métropolitaine)Fabrication françaiseConvivialité3 ramequins porcelaine 21 cl', NULL, NULL, NULL, 'en_US'),
+(65, 64, 'Paddle3ramequinsSoApero', 'paddle3ramequinssoapero', 'Servez, présentez, dégustez !Indispensable sur la table de l\'apéro. Découvrez le Paddle 3 ramequins So Apéro ! Disposez vos 3 ramequins sur l\'élégant Paddle So Apéro ! pour transporter et présenter vos grignotages sur la table de votre apéritif. Succès garanti !Le Paddle 3 ramequins So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.Le bois étant une matière vivante, l\'aspect naturel du Paddle à Verrines So Apéro ! peut sensiblement varier selon les lots de bois employés. Avec le temps, il aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.Dimensions :  39 x 9 x 2 cm. Poids 650g.Les «plus» produit :LIVRAISON 24-48 h GRATUITE (France Métropolitaine)Fabrication françaiseConvivialité3 ramequins porcelaine 21 cl', NULL, NULL, NULL, 'en_US');
+INSERT INTO `sylius_product_translation` (`id`, `translatable_id`, `name`, `slug`, `description`, `meta_keywords`, `meta_description`, `short_description`, `locale`) VALUES
 (66, 64, 'Paddle3ramequinsSoApero', 'paddle3ramequinssoapero', 'Servez, présentez, dégustez !Indispensable sur la table de l\'apéro. Découvrez le Paddle 3 ramequins So Apéro ! Disposez vos 3 ramequins sur l\'élégant Paddle So Apéro ! pour transporter et présenter vos grignotages sur la table de votre apéritif. Succès garanti !Le Paddle 3 ramequins So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.Le bois étant une matière vivante, l\'aspect naturel du Paddle à Verrines So Apéro ! peut sensiblement varier selon les lots de bois employés. Avec le temps, il aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.Dimensions :  39 x 9 x 2 cm. Poids 650g.Les «plus» produit :LIVRAISON 24-48 h GRATUITE (France Métropolitaine)Fabrication françaiseConvivialité3 ramequins porcelaine 21 cl', NULL, NULL, 'Servez, présentez, dégustez !Indispensable sur la table de l\'apéro. Découvrez le Paddle 3 ramequins So Apéro ! Disposez vos 3 ramequins sur l\'élégant Paddle So Apéro ! pour transporter et présenter vos grignotages sur la table de votre apéritif. Succès garanti !Le Paddle 3 ramequins So Apéro ! est fabriqué en France en bois brut non traité (hêtre) et non teinté.Le bois étant une matière vivante, l\'aspect naturel du Paddle à Verrines So Apéro ! peut sensiblement varier selon les lots de bois employés. Avec le temps, il aura tendance à se revêtir d\'une élégante patine naturelle qui n\'altère en rien ses qualités de fonctionnement.Dimensions :  39 x 9 x 2 cm. Poids 650g.Les «plus» produit :LIVRAISON 24-48 h GRATUITE (France Métropolitaine)Fabrication françaiseConvivialité3 ramequins porcelaine 21 cl', 'fr_FR');
 
 -- --------------------------------------------------------
@@ -3837,7 +4015,7 @@ CREATE TABLE IF NOT EXISTS `sylius_product_variant_translation` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `sylius_product_variant_translation_uniq_trans` (`translatable_id`,`locale`),
   KEY `IDX_8DC18EDC2C2AC5D3` (`translatable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=335 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=336 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `sylius_product_variant_translation`
@@ -4177,7 +4355,8 @@ INSERT INTO `sylius_product_variant_translation` (`id`, `translatable_id`, `name
 (331, 331, NULL, 'en_US'),
 (332, 332, NULL, 'fr_FR'),
 (333, 333, NULL, 'fr_FR'),
-(334, 334, NULL, 'fr_FR');
+(334, 334, NULL, 'fr_FR'),
+(335, 333, NULL, 'en_US');
 
 -- --------------------------------------------------------
 
@@ -4822,6 +5001,38 @@ INSERT INTO `sylius_zone_member` (`id`, `belongs_to`, `code`) VALUES
 --
 -- Contraintes pour les tables déchargées
 --
+
+--
+-- Contraintes pour la table `odiseo_blog_articles_categories`
+--
+ALTER TABLE `odiseo_blog_articles_categories`
+  ADD CONSTRAINT `FK_F090056C12469DE2` FOREIGN KEY (`category_id`) REFERENCES `odiseo_blog_article_category` (`id`),
+  ADD CONSTRAINT `FK_F090056C7294869C` FOREIGN KEY (`article_id`) REFERENCES `odiseo_blog_article` (`id`);
+
+--
+-- Contraintes pour la table `odiseo_blog_articles_channels`
+--
+ALTER TABLE `odiseo_blog_articles_channels`
+  ADD CONSTRAINT `FK_A4C0CF5F7294869C` FOREIGN KEY (`article_id`) REFERENCES `odiseo_blog_article` (`id`),
+  ADD CONSTRAINT `FK_A4C0CF5F72F5A1AA` FOREIGN KEY (`channel_id`) REFERENCES `sylius_channel` (`id`);
+
+--
+-- Contraintes pour la table `odiseo_blog_article_category_translation`
+--
+ALTER TABLE `odiseo_blog_article_category_translation`
+  ADD CONSTRAINT `FK_2F9EF9492C2AC5D3` FOREIGN KEY (`translatable_id`) REFERENCES `odiseo_blog_article_category` (`id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `odiseo_blog_article_image`
+--
+ALTER TABLE `odiseo_blog_article_image`
+  ADD CONSTRAINT `FK_F97399C97E3C61F9` FOREIGN KEY (`owner_id`) REFERENCES `odiseo_blog_article` (`id`);
+
+--
+-- Contraintes pour la table `odiseo_blog_article_translation`
+--
+ALTER TABLE `odiseo_blog_article_translation`
+  ADD CONSTRAINT `FK_7A606A2C2AC5D3` FOREIGN KEY (`translatable_id`) REFERENCES `odiseo_blog_article` (`id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `sylius_address`
