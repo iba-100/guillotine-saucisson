@@ -1,0 +1,7 @@
+gift_participation:
+  path: /gift
+  controller: App\Controller\GiftController::index
+
+toto:
+  path: /toto
+
