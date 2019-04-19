@@ -1,14 +1,14 @@
 (function () {
 	'use strict';
 
-	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 	function commonjsRequire () {
 		throw new Error('Dynamic requires are not currently supported by rollup-plugin-commonjs');
 	}
 
 	function unwrapExports (x) {
-		return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x.default : x;
+		return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 	}
 
 	function createCommonjsModule(fn, module) {
@@ -16,7 +16,7 @@
 	}
 
 	function getCjsExportFromNamespace (n) {
-		return n && n.default || n;
+		return n && n['default'] || n;
 	}
 
 	var _global = createCommonjsModule(function (module) {
@@ -29,7 +29,7 @@
 	});
 
 	var _core = createCommonjsModule(function (module) {
-	var core = module.exports = { version: '2.5.7' };
+	var core = module.exports = { version: '2.6.5' };
 	if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 	});
 	var _core_1 = _core.version;
@@ -125,14 +125,31 @@
 	  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
 	};
 
+	var _library = false;
+
+	var _shared = createCommonjsModule(function (module) {
+	var SHARED = '__core-js_shared__';
+	var store = _global[SHARED] || (_global[SHARED] = {});
+
+	(module.exports = function (key, value) {
+	  return store[key] || (store[key] = value !== undefined ? value : {});
+	})('versions', []).push({
+	  version: _core.version,
+	  mode: _library ? 'pure' : 'global',
+	  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
+	});
+	});
+
+	var _functionToString = _shared('native-function-to-string', Function.toString);
+
 	var _redefine = createCommonjsModule(function (module) {
 	var SRC = _uid('src');
+
 	var TO_STRING = 'toString';
-	var $toString = Function[TO_STRING];
-	var TPL = ('' + $toString).split(TO_STRING);
+	var TPL = ('' + _functionToString).split(TO_STRING);
 
 	_core.inspectSource = function (it) {
-	  return $toString.call(it);
+	  return _functionToString.call(it);
 	};
 
 	(module.exports = function (O, key, val, safe) {
@@ -152,7 +169,7 @@
 	  }
 	// add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
 	})(Function.prototype, TO_STRING, function toString() {
-	  return typeof this == 'function' && this[SRC] || $toString.call(this);
+	  return typeof this == 'function' && this[SRC] || _functionToString.call(this);
 	});
 	});
 
@@ -251,8 +268,6 @@
 	var _typed_3 = _typed.TYPED;
 	var _typed_4 = _typed.VIEW;
 
-	var _library = false;
-
 	var _redefineAll = function (target, src, safe) {
 	  for (var key in src) _redefine(target, key, src[key], safe);
 	  return target;
@@ -345,19 +360,6 @@
 	    } return !IS_INCLUDES && -1;
 	  };
 	};
-
-	var _shared = createCommonjsModule(function (module) {
-	var SHARED = '__core-js_shared__';
-	var store = _global[SHARED] || (_global[SHARED] = {});
-
-	(module.exports = function (key, value) {
-	  return store[key] || (store[key] = value !== undefined ? value : {});
-	})('versions', []).push({
-	  version: _core.version,
-	  mode: _library ? 'pure' : 'global',
-	  copyright: '© 2018 Denis Pushkarev (zloirock.ru)'
-	});
-	});
 
 	var shared = _shared('keys');
 
@@ -2312,6 +2314,7 @@
 
 	var es6_weakMap = createCommonjsModule(function (module) {
 	'use strict';
+
 	var each = _arrayMethods(0);
 
 
@@ -2319,12 +2322,12 @@
 
 
 
-
+	var NATIVE_WEAK_MAP = _validateCollection;
+	var IS_IE11 = !_global.ActiveXObject && 'ActiveXObject' in _global;
 	var WEAK_MAP = 'WeakMap';
 	var getWeak = _meta.getWeak;
 	var isExtensible = Object.isExtensible;
 	var uncaughtFrozenStore = _collectionWeak.ufstore;
-	var tmp = {};
 	var InternalMap;
 
 	var wrapper = function (get) {
@@ -2352,7 +2355,7 @@
 	var $WeakMap = module.exports = _collection(WEAK_MAP, wrapper, methods, _collectionWeak, true, true);
 
 	// IE11 WeakMap frozen keys fix
-	if (_fails(function () { return new $WeakMap().set((Object.freeze || Object)(tmp), 7).get(tmp) != 7; })) {
+	if (NATIVE_WEAK_MAP && IS_IE11) {
 	  InternalMap = _collectionWeak.getConstructor(wrapper, WEAK_MAP);
 	  _objectAssign(InternalMap.prototype, methods);
 	  _meta.NEED = true;
@@ -3925,22 +3928,194 @@
 	};
 
 	'use strict';
+	var at = _stringAt(true);
+
+	 // `AdvanceStringIndex` abstract operation
+	// https://tc39.github.io/ecma262/#sec-advancestringindex
+	var _advanceStringIndex = function (S, index, unicode) {
+	  return index + (unicode ? at(S, index).length : 1);
+	};
+
+	'use strict';
+
+
+	var builtinExec = RegExp.prototype.exec;
+
+	 // `RegExpExec` abstract operation
+	// https://tc39.github.io/ecma262/#sec-regexpexec
+	var _regexpExecAbstract = function (R, S) {
+	  var exec = R.exec;
+	  if (typeof exec === 'function') {
+	    var result = exec.call(R, S);
+	    if (typeof result !== 'object') {
+	      throw new TypeError('RegExp exec method returned something other than an Object or null');
+	    }
+	    return result;
+	  }
+	  if (_classof(R) !== 'RegExp') {
+	    throw new TypeError('RegExp#exec called on incompatible receiver');
+	  }
+	  return builtinExec.call(R, S);
+	};
+
+	'use strict';
+
+
+
+	var nativeExec = RegExp.prototype.exec;
+	// This always refers to the native implementation, because the
+	// String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
+	// which loads this file before patching the method.
+	var nativeReplace = String.prototype.replace;
+
+	var patchedExec = nativeExec;
+
+	var LAST_INDEX = 'lastIndex';
+
+	var UPDATES_LAST_INDEX_WRONG = (function () {
+	  var re1 = /a/,
+	      re2 = /b*/g;
+	  nativeExec.call(re1, 'a');
+	  nativeExec.call(re2, 'a');
+	  return re1[LAST_INDEX] !== 0 || re2[LAST_INDEX] !== 0;
+	})();
+
+	// nonparticipating capturing group, copied from es5-shim's String#split patch.
+	var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
+
+	var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED;
+
+	if (PATCH) {
+	  patchedExec = function exec(str) {
+	    var re = this;
+	    var lastIndex, reCopy, match, i;
+
+	    if (NPCG_INCLUDED) {
+	      reCopy = new RegExp('^' + re.source + '$(?!\\s)', _flags.call(re));
+	    }
+	    if (UPDATES_LAST_INDEX_WRONG) lastIndex = re[LAST_INDEX];
+
+	    match = nativeExec.call(re, str);
+
+	    if (UPDATES_LAST_INDEX_WRONG && match) {
+	      re[LAST_INDEX] = re.global ? match.index + match[0].length : lastIndex;
+	    }
+	    if (NPCG_INCLUDED && match && match.length > 1) {
+	      // Fix browsers whose `exec` methods don't consistently return `undefined`
+	      // for NPCG, like IE8. NOTE: This doesn' work for /(.?)?/
+	      // eslint-disable-next-line no-loop-func
+	      nativeReplace.call(match[0], reCopy, function () {
+	        for (i = 1; i < arguments.length - 2; i++) {
+	          if (arguments[i] === undefined) match[i] = undefined;
+	        }
+	      });
+	    }
+
+	    return match;
+	  };
+	}
+
+	var _regexpExec = patchedExec;
+
+	'use strict';
+
+	_export({
+	  target: 'RegExp',
+	  proto: true,
+	  forced: _regexpExec !== /./.exec
+	}, {
+	  exec: _regexpExec
+	});
+
+	var es6_regexp_exec = {
+
+	};
+
+	'use strict';
 
 
 
 
 
+
+
+
+	var SPECIES$3 = _wks('species');
+
+	var REPLACE_SUPPORTS_NAMED_GROUPS = !_fails(function () {
+	  // #replace needs built-in support for named groups.
+	  // #match works fine because it just return the exec results, even if it has
+	  // a "grops" property.
+	  var re = /./;
+	  re.exec = function () {
+	    var result = [];
+	    result.groups = { a: '7' };
+	    return result;
+	  };
+	  return ''.replace(re, '$<a>') !== '7';
+	});
+
+	var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = (function () {
+	  // Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
+	  var re = /(?:)/;
+	  var originalExec = re.exec;
+	  re.exec = function () { return originalExec.apply(this, arguments); };
+	  var result = 'ab'.split(re);
+	  return result.length === 2 && result[0] === 'a' && result[1] === 'b';
+	})();
 
 	var _fixReWks = function (KEY, length, exec) {
 	  var SYMBOL = _wks(KEY);
-	  var fns = exec(_defined, SYMBOL, ''[KEY]);
-	  var strfn = fns[0];
-	  var rxfn = fns[1];
-	  if (_fails(function () {
+
+	  var DELEGATES_TO_SYMBOL = !_fails(function () {
+	    // String methods call symbol-named RegEp methods
 	    var O = {};
 	    O[SYMBOL] = function () { return 7; };
 	    return ''[KEY](O) != 7;
-	  })) {
+	  });
+
+	  var DELEGATES_TO_EXEC = DELEGATES_TO_SYMBOL ? !_fails(function () {
+	    // Symbol-named RegExp methods call .exec
+	    var execCalled = false;
+	    var re = /a/;
+	    re.exec = function () { execCalled = true; return null; };
+	    if (KEY === 'split') {
+	      // RegExp[@@split] doesn't call the regex's exec method, but first creates
+	      // a new one. We need to return the patched regex when creating the new one.
+	      re.constructor = {};
+	      re.constructor[SPECIES$3] = function () { return re; };
+	    }
+	    re[SYMBOL]('');
+	    return !execCalled;
+	  }) : undefined;
+
+	  if (
+	    !DELEGATES_TO_SYMBOL ||
+	    !DELEGATES_TO_EXEC ||
+	    (KEY === 'replace' && !REPLACE_SUPPORTS_NAMED_GROUPS) ||
+	    (KEY === 'split' && !SPLIT_WORKS_WITH_OVERWRITTEN_EXEC)
+	  ) {
+	    var nativeRegExpMethod = /./[SYMBOL];
+	    var fns = exec(
+	      _defined,
+	      SYMBOL,
+	      ''[KEY],
+	      function maybeCallNative(nativeMethod, regexp, str, arg2, forceStringMethod) {
+	        if (regexp.exec === _regexpExec) {
+	          if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
+	            // The native String method already delegates to @@method (this
+	            // polyfilled function), leasing to infinite recursion.
+	            // We avoid it by directly calling the native @@method method.
+	            return { done: true, value: nativeRegExpMethod.call(regexp, str, arg2) };
+	          }
+	          return { done: true, value: nativeMethod.call(str, regexp, arg2) };
+	        }
+	        return { done: false };
+	      }
+	    );
+	    var strfn = fns[0];
+	    var rxfn = fns[1];
+
 	    _redefine(String.prototype, KEY, strfn);
 	    _hide(RegExp.prototype, SYMBOL, length == 2
 	      // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
@@ -3953,47 +4128,197 @@
 	  }
 	};
 
+	'use strict';
+
+
+
+
+
+
 	// @@match logic
-	_fixReWks('match', 1, function (defined, MATCH, $match) {
-	  // 21.1.3.11 String.prototype.match(regexp)
-	  return [function match(regexp) {
-	    'use strict';
-	    var O = defined(this);
-	    var fn = regexp == undefined ? undefined : regexp[MATCH];
-	    return fn !== undefined ? fn.call(regexp, O) : new RegExp(regexp)[MATCH](String(O));
-	  }, $match];
+	_fixReWks('match', 1, function (defined, MATCH, $match, maybeCallNative) {
+	  return [
+	    // `String.prototype.match` method
+	    // https://tc39.github.io/ecma262/#sec-string.prototype.match
+	    function match(regexp) {
+	      var O = defined(this);
+	      var fn = regexp == undefined ? undefined : regexp[MATCH];
+	      return fn !== undefined ? fn.call(regexp, O) : new RegExp(regexp)[MATCH](String(O));
+	    },
+	    // `RegExp.prototype[@@match]` method
+	    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@match
+	    function (regexp) {
+	      var res = maybeCallNative($match, regexp, this);
+	      if (res.done) return res.value;
+	      var rx = _anObject(regexp);
+	      var S = String(this);
+	      if (!rx.global) return _regexpExecAbstract(rx, S);
+	      var fullUnicode = rx.unicode;
+	      rx.lastIndex = 0;
+	      var A = [];
+	      var n = 0;
+	      var result;
+	      while ((result = _regexpExecAbstract(rx, S)) !== null) {
+	        var matchStr = String(result[0]);
+	        A[n] = matchStr;
+	        if (matchStr === '') rx.lastIndex = _advanceStringIndex(S, _toLength(rx.lastIndex), fullUnicode);
+	        n++;
+	      }
+	      return n === 0 ? null : A;
+	    }
+	  ];
 	});
 
 	var es6_regexp_match = {
 
 	};
 
+	'use strict';
+
+
+
+
+
+
+
+	var max$1 = Math.max;
+	var min$2 = Math.min;
+	var floor$1 = Math.floor;
+	var SUBSTITUTION_SYMBOLS = /\$([$&`']|\d\d?|<[^>]*>)/g;
+	var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&`']|\d\d?)/g;
+
+	var maybeToString = function (it) {
+	  return it === undefined ? it : String(it);
+	};
+
 	// @@replace logic
-	_fixReWks('replace', 2, function (defined, REPLACE, $replace) {
-	  // 21.1.3.14 String.prototype.replace(searchValue, replaceValue)
-	  return [function replace(searchValue, replaceValue) {
-	    'use strict';
-	    var O = defined(this);
-	    var fn = searchValue == undefined ? undefined : searchValue[REPLACE];
-	    return fn !== undefined
-	      ? fn.call(searchValue, O, replaceValue)
-	      : $replace.call(String(O), searchValue, replaceValue);
-	  }, $replace];
+	_fixReWks('replace', 2, function (defined, REPLACE, $replace, maybeCallNative) {
+	  return [
+	    // `String.prototype.replace` method
+	    // https://tc39.github.io/ecma262/#sec-string.prototype.replace
+	    function replace(searchValue, replaceValue) {
+	      var O = defined(this);
+	      var fn = searchValue == undefined ? undefined : searchValue[REPLACE];
+	      return fn !== undefined
+	        ? fn.call(searchValue, O, replaceValue)
+	        : $replace.call(String(O), searchValue, replaceValue);
+	    },
+	    // `RegExp.prototype[@@replace]` method
+	    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@replace
+	    function (regexp, replaceValue) {
+	      var res = maybeCallNative($replace, regexp, this, replaceValue);
+	      if (res.done) return res.value;
+
+	      var rx = _anObject(regexp);
+	      var S = String(this);
+	      var functionalReplace = typeof replaceValue === 'function';
+	      if (!functionalReplace) replaceValue = String(replaceValue);
+	      var global = rx.global;
+	      if (global) {
+	        var fullUnicode = rx.unicode;
+	        rx.lastIndex = 0;
+	      }
+	      var results = [];
+	      while (true) {
+	        var result = _regexpExecAbstract(rx, S);
+	        if (result === null) break;
+	        results.push(result);
+	        if (!global) break;
+	        var matchStr = String(result[0]);
+	        if (matchStr === '') rx.lastIndex = _advanceStringIndex(S, _toLength(rx.lastIndex), fullUnicode);
+	      }
+	      var accumulatedResult = '';
+	      var nextSourcePosition = 0;
+	      for (var i = 0; i < results.length; i++) {
+	        result = results[i];
+	        var matched = String(result[0]);
+	        var position = max$1(min$2(_toInteger(result.index), S.length), 0);
+	        var captures = [];
+	        // NOTE: This is equivalent to
+	        //   captures = result.slice(1).map(maybeToString)
+	        // but for some reason `nativeSlice.call(result, 1, result.length)` (called in
+	        // the slice polyfill when slicing native arrays) "doesn't work" in safari 9 and
+	        // causes a crash (https://pastebin.com/N21QzeQA) when trying to debug it.
+	        for (var j = 1; j < result.length; j++) captures.push(maybeToString(result[j]));
+	        var namedCaptures = result.groups;
+	        if (functionalReplace) {
+	          var replacerArgs = [matched].concat(captures, position, S);
+	          if (namedCaptures !== undefined) replacerArgs.push(namedCaptures);
+	          var replacement = String(replaceValue.apply(undefined, replacerArgs));
+	        } else {
+	          replacement = getSubstitution(matched, S, position, captures, namedCaptures, replaceValue);
+	        }
+	        if (position >= nextSourcePosition) {
+	          accumulatedResult += S.slice(nextSourcePosition, position) + replacement;
+	          nextSourcePosition = position + matched.length;
+	        }
+	      }
+	      return accumulatedResult + S.slice(nextSourcePosition);
+	    }
+	  ];
+
+	    // https://tc39.github.io/ecma262/#sec-getsubstitution
+	  function getSubstitution(matched, str, position, captures, namedCaptures, replacement) {
+	    var tailPos = position + matched.length;
+	    var m = captures.length;
+	    var symbols = SUBSTITUTION_SYMBOLS_NO_NAMED;
+	    if (namedCaptures !== undefined) {
+	      namedCaptures = _toObject(namedCaptures);
+	      symbols = SUBSTITUTION_SYMBOLS;
+	    }
+	    return $replace.call(replacement, symbols, function (match, ch) {
+	      var capture;
+	      switch (ch.charAt(0)) {
+	        case '$': return '$';
+	        case '&': return matched;
+	        case '`': return str.slice(0, position);
+	        case "'": return str.slice(tailPos);
+	        case '<':
+	          capture = namedCaptures[ch.slice(1, -1)];
+	          break;
+	        default: // \d\d?
+	          var n = +ch;
+	          if (n === 0) return match;
+	          if (n > m) {
+	            var f = floor$1(n / 10);
+	            if (f === 0) return match;
+	            if (f <= m) return captures[f - 1] === undefined ? ch.charAt(1) : captures[f - 1] + ch.charAt(1);
+	            return match;
+	          }
+	          capture = captures[n - 1];
+	      }
+	      return capture === undefined ? '' : capture;
+	    });
+	  }
 	});
 
 	var es6_regexp_replace = {
 
 	};
 
+	'use strict';
+
+
+
+
+
+
+
+
+
+	var $min = Math.min;
+	var $push = [].push;
+	var $SPLIT = 'split';
+	var LENGTH = 'length';
+	var LAST_INDEX$1 = 'lastIndex';
+	var MAX_UINT32 = 0xffffffff;
+
+	// babel-minify transpiles RegExp('x', 'y') -> /x/y and it causes SyntaxError
+	var SUPPORTS_Y = !_fails(function () { RegExp(MAX_UINT32, 'y'); });
+
 	// @@split logic
-	_fixReWks('split', 2, function (defined, SPLIT, $split) {
-	  'use strict';
-	  var isRegExp = _isRegexp;
-	  var _split = $split;
-	  var $push = [].push;
-	  var $SPLIT = 'split';
-	  var LENGTH = 'length';
-	  var LAST_INDEX = 'lastIndex';
+	_fixReWks('split', 2, function (defined, SPLIT, $split, maybeCallNative) {
+	  var internalSplit;
 	  if (
 	    'abbc'[$SPLIT](/(b)*/)[1] == 'c' ||
 	    'test'[$SPLIT](/(?:)/, -1)[LENGTH] != 4 ||
@@ -4002,41 +4327,32 @@
 	    '.'[$SPLIT](/()()/)[LENGTH] > 1 ||
 	    ''[$SPLIT](/.?/)[LENGTH]
 	  ) {
-	    var NPCG = /()??/.exec('')[1] === undefined; // nonparticipating capturing group
 	    // based on es5-shim implementation, need to rework it
-	    $split = function (separator, limit) {
+	    internalSplit = function (separator, limit) {
 	      var string = String(this);
 	      if (separator === undefined && limit === 0) return [];
 	      // If `separator` is not a regex, use native split
-	      if (!isRegExp(separator)) return _split.call(string, separator, limit);
+	      if (!_isRegexp(separator)) return $split.call(string, separator, limit);
 	      var output = [];
 	      var flags = (separator.ignoreCase ? 'i' : '') +
 	                  (separator.multiline ? 'm' : '') +
 	                  (separator.unicode ? 'u' : '') +
 	                  (separator.sticky ? 'y' : '');
 	      var lastLastIndex = 0;
-	      var splitLimit = limit === undefined ? 4294967295 : limit >>> 0;
+	      var splitLimit = limit === undefined ? MAX_UINT32 : limit >>> 0;
 	      // Make `global` and avoid `lastIndex` issues by working with a copy
 	      var separatorCopy = new RegExp(separator.source, flags + 'g');
-	      var separator2, match, lastIndex, lastLength, i;
-	      // Doesn't need flags gy, but they don't hurt
-	      if (!NPCG) separator2 = new RegExp('^' + separatorCopy.source + '$(?!\\s)', flags);
-	      while (match = separatorCopy.exec(string)) {
-	        // `separatorCopy.lastIndex` is not reliable cross-browser
-	        lastIndex = match.index + match[0][LENGTH];
+	      var match, lastIndex, lastLength;
+	      while (match = _regexpExec.call(separatorCopy, string)) {
+	        lastIndex = separatorCopy[LAST_INDEX$1];
 	        if (lastIndex > lastLastIndex) {
 	          output.push(string.slice(lastLastIndex, match.index));
-	          // Fix browsers whose `exec` methods don't consistently return `undefined` for NPCG
-	          // eslint-disable-next-line no-loop-func
-	          if (!NPCG && match[LENGTH] > 1) match[0].replace(separator2, function () {
-	            for (i = 1; i < arguments[LENGTH] - 2; i++) if (arguments[i] === undefined) match[i] = undefined;
-	          });
 	          if (match[LENGTH] > 1 && match.index < string[LENGTH]) $push.apply(output, match.slice(1));
 	          lastLength = match[0][LENGTH];
 	          lastLastIndex = lastIndex;
 	          if (output[LENGTH] >= splitLimit) break;
 	        }
-	        if (separatorCopy[LAST_INDEX] === match.index) separatorCopy[LAST_INDEX]++; // Avoid an infinite loop
+	        if (separatorCopy[LAST_INDEX$1] === match.index) separatorCopy[LAST_INDEX$1]++; // Avoid an infinite loop
 	      }
 	      if (lastLastIndex === string[LENGTH]) {
 	        if (lastLength || !separatorCopy.test('')) output.push('');
@@ -4045,31 +4361,110 @@
 	    };
 	  // Chakra, V8
 	  } else if ('0'[$SPLIT](undefined, 0)[LENGTH]) {
-	    $split = function (separator, limit) {
-	      return separator === undefined && limit === 0 ? [] : _split.call(this, separator, limit);
+	    internalSplit = function (separator, limit) {
+	      return separator === undefined && limit === 0 ? [] : $split.call(this, separator, limit);
 	    };
+	  } else {
+	    internalSplit = $split;
 	  }
-	  // 21.1.3.17 String.prototype.split(separator, limit)
-	  return [function split(separator, limit) {
-	    var O = defined(this);
-	    var fn = separator == undefined ? undefined : separator[SPLIT];
-	    return fn !== undefined ? fn.call(separator, O, limit) : $split.call(String(O), separator, limit);
-	  }, $split];
+
+	  return [
+	    // `String.prototype.split` method
+	    // https://tc39.github.io/ecma262/#sec-string.prototype.split
+	    function split(separator, limit) {
+	      var O = defined(this);
+	      var splitter = separator == undefined ? undefined : separator[SPLIT];
+	      return splitter !== undefined
+	        ? splitter.call(separator, O, limit)
+	        : internalSplit.call(String(O), separator, limit);
+	    },
+	    // `RegExp.prototype[@@split]` method
+	    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@split
+	    //
+	    // NOTE: This cannot be properly polyfilled in engines that don't support
+	    // the 'y' flag.
+	    function (regexp, limit) {
+	      var res = maybeCallNative(internalSplit, regexp, this, limit, internalSplit !== $split);
+	      if (res.done) return res.value;
+
+	      var rx = _anObject(regexp);
+	      var S = String(this);
+	      var C = _speciesConstructor(rx, RegExp);
+
+	      var unicodeMatching = rx.unicode;
+	      var flags = (rx.ignoreCase ? 'i' : '') +
+	                  (rx.multiline ? 'm' : '') +
+	                  (rx.unicode ? 'u' : '') +
+	                  (SUPPORTS_Y ? 'y' : 'g');
+
+	      // ^(? + rx + ) is needed, in combination with some S slicing, to
+	      // simulate the 'y' flag.
+	      var splitter = new C(SUPPORTS_Y ? rx : '^(?:' + rx.source + ')', flags);
+	      var lim = limit === undefined ? MAX_UINT32 : limit >>> 0;
+	      if (lim === 0) return [];
+	      if (S.length === 0) return _regexpExecAbstract(splitter, S) === null ? [S] : [];
+	      var p = 0;
+	      var q = 0;
+	      var A = [];
+	      while (q < S.length) {
+	        splitter.lastIndex = SUPPORTS_Y ? q : 0;
+	        var z = _regexpExecAbstract(splitter, SUPPORTS_Y ? S : S.slice(q));
+	        var e;
+	        if (
+	          z === null ||
+	          (e = $min(_toLength(splitter.lastIndex + (SUPPORTS_Y ? 0 : q)), S.length)) === p
+	        ) {
+	          q = _advanceStringIndex(S, q, unicodeMatching);
+	        } else {
+	          A.push(S.slice(p, q));
+	          if (A.length === lim) return A;
+	          for (var i = 1; i <= z.length - 1; i++) {
+	            A.push(z[i]);
+	            if (A.length === lim) return A;
+	          }
+	          q = p = e;
+	        }
+	      }
+	      A.push(S.slice(p));
+	      return A;
+	    }
+	  ];
 	});
 
 	var es6_regexp_split = {
 
 	};
 
+	'use strict';
+
+
+
+
+
 	// @@search logic
-	_fixReWks('search', 1, function (defined, SEARCH, $search) {
-	  // 21.1.3.15 String.prototype.search(regexp)
-	  return [function search(regexp) {
-	    'use strict';
-	    var O = defined(this);
-	    var fn = regexp == undefined ? undefined : regexp[SEARCH];
-	    return fn !== undefined ? fn.call(regexp, O) : new RegExp(regexp)[SEARCH](String(O));
-	  }, $search];
+	_fixReWks('search', 1, function (defined, SEARCH, $search, maybeCallNative) {
+	  return [
+	    // `String.prototype.search` method
+	    // https://tc39.github.io/ecma262/#sec-string.prototype.search
+	    function search(regexp) {
+	      var O = defined(this);
+	      var fn = regexp == undefined ? undefined : regexp[SEARCH];
+	      return fn !== undefined ? fn.call(regexp, O) : new RegExp(regexp)[SEARCH](String(O));
+	    },
+	    // `RegExp.prototype[@@search]` method
+	    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@search
+	    function (regexp) {
+	      var res = maybeCallNative($search, regexp, this);
+	      if (res.done) return res.value;
+	      var rx = _anObject(regexp);
+	      var S = String(this);
+	      var previousLastIndex = rx.lastIndex;
+	      if (!_sameValue(previousLastIndex, 0)) rx.lastIndex = 0;
+	      var result = _regexpExecAbstract(rx, S);
+	      if (!_sameValue(rx.lastIndex, previousLastIndex)) rx.lastIndex = previousLastIndex;
+	      return result === null ? -1 : result.index;
+	    }
+	  ];
 	});
 
 	var es6_regexp_search = {
@@ -4227,9 +4622,9 @@
 
 	// 20.1.2.3 Number.isInteger(number)
 
-	var floor$1 = Math.floor;
+	var floor$2 = Math.floor;
 	var _isInteger = function isInteger(it) {
-	  return !_isObject(it) && isFinite(it) && floor$1(it) === it;
+	  return !_isObject(it) && isFinite(it) && floor$2(it) === it;
 	};
 
 	// 20.1.2.3 Number.isInteger(number)
@@ -4713,7 +5108,9 @@
 
 
 	// https://github.com/zloirock/core-js/issues/280
-	_export(_export.P + _export.F * /Version\/10\.\d+(\.\d+)? Safari\//.test(_userAgent), 'String', {
+	var WEBKIT_BUG = /Version\/10\.\d+(\.\d+)?( Mobile\/\w+)? Safari\//.test(_userAgent);
+
+	_export(_export.P + _export.F * WEBKIT_BUG, 'String', {
 	  padStart: function padStart(maxLength /* , fillString = ' ' */) {
 	    return _stringPad(this, maxLength, arguments.length > 1 ? arguments[1] : undefined, true);
 	  }
@@ -4730,7 +5127,9 @@
 
 
 	// https://github.com/zloirock/core-js/issues/280
-	_export(_export.P + _export.F * /Version\/10\.\d+(\.\d+)? Safari\//.test(_userAgent), 'String', {
+	var WEBKIT_BUG$1 = /Version\/10\.\d+(\.\d+)?( Mobile\/\w+)? Safari\//.test(_userAgent);
+
+	_export(_export.P + _export.F * WEBKIT_BUG$1, 'String', {
 	  padEnd: function padEnd(maxLength /* , fillString = ' ' */) {
 	    return _stringPad(this, maxLength, arguments.length > 1 ? arguments[1] : undefined, false);
 	  }
@@ -4832,7 +5231,7 @@
 
 	var jquery = createCommonjsModule(function (module) {
 	/*!
-	 * jQuery JavaScript Library v3.3.1
+	 * jQuery JavaScript Library v3.4.0
 	 * https://jquery.com/
 	 *
 	 * Includes Sizzle.js
@@ -4842,7 +5241,7 @@
 	 * Released under the MIT license
 	 * https://jquery.org/license
 	 *
-	 * Date: 2018-01-20T17:24Z
+	 * Date: 2019-04-10T19:48Z
 	 */
 	( function( global, factory ) {
 
@@ -4924,20 +5323,33 @@
 		var preservedScriptAttributes = {
 			type: true,
 			src: true,
+			nonce: true,
 			noModule: true
 		};
 
-		function DOMEval( code, doc, node ) {
+		function DOMEval( code, node, doc ) {
 			doc = doc || document;
 
-			var i,
+			var i, val,
 				script = doc.createElement( "script" );
 
 			script.text = code;
 			if ( node ) {
 				for ( i in preservedScriptAttributes ) {
-					if ( node[ i ] ) {
-						script[ i ] = node[ i ];
+
+					// Support: Firefox 64+, Edge 18+
+					// Some browsers don't support the "nonce" property on scripts.
+					// On the other hand, just using `getAttribute` is not enough as
+					// the `nonce` attribute is reset to an empty string whenever it
+					// becomes browsing-context connected.
+					// See https://github.com/whatwg/html/issues/2369
+					// See https://html.spec.whatwg.org/#nonce-attributes
+					// The `node.getAttribute` check was added for the sake of
+					// `jQuery.globalEval` so that it can fake a nonce-containing node
+					// via an object.
+					val = node[ i ] || node.getAttribute && node.getAttribute( i );
+					if ( val ) {
+						script.setAttribute( i, val );
 					}
 				}
 			}
@@ -4962,7 +5374,7 @@
 
 
 	var
-		version = "3.3.1",
+		version = "3.4.0",
 
 		// Define a local copy of jQuery
 		jQuery = function( selector, context ) {
@@ -5091,25 +5503,28 @@
 
 				// Extend the base object
 				for ( name in options ) {
-					src = target[ name ];
 					copy = options[ name ];
 
+					// Prevent Object.prototype pollution
 					// Prevent never-ending loop
-					if ( target === copy ) {
+					if ( name === "__proto__" || target === copy ) {
 						continue;
 					}
 
 					// Recurse if we're merging plain objects or arrays
 					if ( deep && copy && ( jQuery.isPlainObject( copy ) ||
 						( copyIsArray = Array.isArray( copy ) ) ) ) {
+						src = target[ name ];
 
-						if ( copyIsArray ) {
-							copyIsArray = false;
-							clone = src && Array.isArray( src ) ? src : [];
-
+						// Ensure proper type for the source value
+						if ( copyIsArray && !Array.isArray( src ) ) {
+							clone = [];
+						} else if ( !copyIsArray && !jQuery.isPlainObject( src ) ) {
+							clone = {};
 						} else {
-							clone = src && jQuery.isPlainObject( src ) ? src : {};
+							clone = src;
 						}
+						copyIsArray = false;
 
 						// Never move original objects, clone them
 						target[ name ] = jQuery.extend( deep, clone, copy );
@@ -5162,9 +5577,6 @@
 		},
 
 		isEmptyObject: function( obj ) {
-
-			/* eslint-disable no-unused-vars */
-			// See https://github.com/eslint/eslint/issues/6125
 			var name;
 
 			for ( name in obj ) {
@@ -5174,8 +5586,8 @@
 		},
 
 		// Evaluates a script in a global context
-		globalEval: function( code ) {
-			DOMEval( code );
+		globalEval: function( code, options ) {
+			DOMEval( code, { nonce: options && options.nonce } );
 		},
 
 		each: function( obj, callback ) {
@@ -5331,14 +5743,14 @@
 	}
 	var Sizzle =
 	/*!
-	 * Sizzle CSS Selector Engine v2.3.3
+	 * Sizzle CSS Selector Engine v2.3.4
 	 * https://sizzlejs.com/
 	 *
-	 * Copyright jQuery Foundation and other contributors
+	 * Copyright JS Foundation and other contributors
 	 * Released under the MIT license
-	 * http://jquery.org/license
+	 * https://js.foundation/
 	 *
-	 * Date: 2016-08-08
+	 * Date: 2019-04-08
 	 */
 	(function( window ) {
 
@@ -5372,6 +5784,7 @@
 		classCache = createCache(),
 		tokenCache = createCache(),
 		compilerCache = createCache(),
+		nonnativeSelectorCache = createCache(),
 		sortOrder = function( a, b ) {
 			if ( a === b ) {
 				hasDuplicate = true;
@@ -5433,8 +5846,7 @@
 
 		rcomma = new RegExp( "^" + whitespace + "*," + whitespace + "*" ),
 		rcombinators = new RegExp( "^" + whitespace + "*([>+~]|" + whitespace + ")" + whitespace + "*" ),
-
-		rattributeQuotes = new RegExp( "=" + whitespace + "*([^\\]'\"]*?)" + whitespace + "*\\]", "g" ),
+		rdescend = new RegExp( whitespace + "|>" ),
 
 		rpseudo = new RegExp( pseudos ),
 		ridentifier = new RegExp( "^" + identifier + "$" ),
@@ -5455,6 +5867,7 @@
 				whitespace + "*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", "i" )
 		},
 
+		rhtml = /HTML$/i,
 		rinputs = /^(?:input|select|textarea|button)$/i,
 		rheader = /^h\d$/i,
 
@@ -5509,9 +5922,9 @@
 			setDocument();
 		},
 
-		disabledAncestor = addCombinator(
+		inDisabledFieldset = addCombinator(
 			function( elem ) {
-				return elem.disabled === true && ("form" in elem || "label" in elem);
+				return elem.disabled === true && elem.nodeName.toLowerCase() === "fieldset";
 			},
 			{ dir: "parentNode", next: "legend" }
 		);
@@ -5624,18 +6037,22 @@
 
 				// Take advantage of querySelectorAll
 				if ( support.qsa &&
-					!compilerCache[ selector + " " ] &&
-					(!rbuggyQSA || !rbuggyQSA.test( selector )) ) {
+					!nonnativeSelectorCache[ selector + " " ] &&
+					(!rbuggyQSA || !rbuggyQSA.test( selector )) &&
 
-					if ( nodeType !== 1 ) {
-						newContext = context;
-						newSelector = selector;
-
-					// qSA looks outside Element context, which is not what we want
-					// Thanks to Andrew Dupont for this workaround technique
-					// Support: IE <=8
+					// Support: IE 8 only
 					// Exclude object elements
-					} else if ( context.nodeName.toLowerCase() !== "object" ) {
+					(nodeType !== 1 || context.nodeName.toLowerCase() !== "object") ) {
+
+					newSelector = selector;
+					newContext = context;
+
+					// qSA considers elements outside a scoping root when evaluating child or
+					// descendant combinators, which is not what we want.
+					// In such cases, we work around the behavior by prefixing every selector in the
+					// list with an ID selector referencing the scope context.
+					// Thanks to Andrew Dupont for this technique.
+					if ( nodeType === 1 && rdescend.test( selector ) ) {
 
 						// Capture the context ID, setting it first if necessary
 						if ( (nid = context.getAttribute( "id" )) ) {
@@ -5657,17 +6074,16 @@
 							context;
 					}
 
-					if ( newSelector ) {
-						try {
-							push.apply( results,
-								newContext.querySelectorAll( newSelector )
-							);
-							return results;
-						} catch ( qsaError ) {
-						} finally {
-							if ( nid === expando ) {
-								context.removeAttribute( "id" );
-							}
+					try {
+						push.apply( results,
+							newContext.querySelectorAll( newSelector )
+						);
+						return results;
+					} catch ( qsaError ) {
+						nonnativeSelectorCache( selector, true );
+					} finally {
+						if ( nid === expando ) {
+							context.removeAttribute( "id" );
 						}
 					}
 				}
@@ -5831,7 +6247,7 @@
 						// Where there is no isDisabled, check manually
 						/* jshint -W018 */
 						elem.isDisabled !== !disabled &&
-							disabledAncestor( elem ) === disabled;
+							inDisabledFieldset( elem ) === disabled;
 				}
 
 				return elem.disabled === disabled;
@@ -5888,10 +6304,13 @@
 	 * @returns {Boolean} True iff elem is a non-HTML XML node
 	 */
 	isXML = Sizzle.isXML = function( elem ) {
-		// documentElement is verified for cases where it doesn't yet exist
-		// (such as loading iframes in IE - #4833)
-		var documentElement = elem && (elem.ownerDocument || elem).documentElement;
-		return documentElement ? documentElement.nodeName !== "HTML" : false;
+		var namespace = elem.namespaceURI,
+			docElem = (elem.ownerDocument || elem).documentElement;
+
+		// Support: IE <=8
+		// Assume HTML when documentElement doesn't yet exist, such as inside loading iframes
+		// https://bugs.jquery.com/ticket/4833
+		return !rhtml.test( namespace || docElem && docElem.nodeName || "HTML" );
 	};
 
 	/**
@@ -6313,11 +6732,8 @@
 			setDocument( elem );
 		}
 
-		// Make sure that attribute selectors are quoted
-		expr = expr.replace( rattributeQuotes, "='$1']" );
-
 		if ( support.matchesSelector && documentIsHTML &&
-			!compilerCache[ expr + " " ] &&
+			!nonnativeSelectorCache[ expr + " " ] &&
 			( !rbuggyMatches || !rbuggyMatches.test( expr ) ) &&
 			( !rbuggyQSA     || !rbuggyQSA.test( expr ) ) ) {
 
@@ -6331,7 +6747,9 @@
 						elem.document && elem.document.nodeType !== 11 ) {
 					return ret;
 				}
-			} catch (e) {}
+			} catch (e) {
+				nonnativeSelectorCache( expr, true );
+			}
 		}
 
 		return Sizzle( expr, document, null, [ elem ] ).length > 0;
@@ -6790,7 +7208,7 @@
 			"contains": markFunction(function( text ) {
 				text = text.replace( runescape, funescape );
 				return function( elem ) {
-					return ( elem.textContent || elem.innerText || getText( elem ) ).indexOf( text ) > -1;
+					return ( elem.textContent || getText( elem ) ).indexOf( text ) > -1;
 				};
 			}),
 
@@ -6929,7 +7347,11 @@
 			}),
 
 			"lt": createPositionalPseudo(function( matchIndexes, length, argument ) {
-				var i = argument < 0 ? argument + length : argument;
+				var i = argument < 0 ?
+					argument + length :
+					argument > length ?
+						length :
+						argument;
 				for ( ; --i >= 0; ) {
 					matchIndexes.push( i );
 				}
@@ -7979,18 +8401,18 @@
 			return siblings( elem.firstChild );
 		},
 		contents: function( elem ) {
-	        if ( nodeName( elem, "iframe" ) ) {
-	            return elem.contentDocument;
-	        }
+			if ( typeof elem.contentDocument !== "undefined" ) {
+				return elem.contentDocument;
+			}
 
-	        // Support: IE 9 - 11 only, iOS 7 only, Android Browser <=4.3 only
-	        // Treat the template element as a regular one in browsers that
-	        // don't support it.
-	        if ( nodeName( elem, "template" ) ) {
-	            elem = elem.content || elem;
-	        }
+			// Support: IE 9 - 11 only, iOS 7 only, Android Browser <=4.3 only
+			// Treat the template element as a regular one in browsers that
+			// don't support it.
+			if ( nodeName( elem, "template" ) ) {
+				elem = elem.content || elem;
+			}
 
-	        return jQuery.merge( [], elem.childNodes );
+			return jQuery.merge( [], elem.childNodes );
 		}
 	}, function( name, fn ) {
 		jQuery.fn[ name ] = function( until, selector ) {
@@ -9299,6 +9721,22 @@
 
 	var cssExpand = [ "Top", "Right", "Bottom", "Left" ];
 
+	var documentElement = document.documentElement;
+
+
+
+		var isAttached = function( elem ) {
+				return jQuery.contains( elem.ownerDocument, elem );
+			},
+			composed = { composed: true };
+
+		// Check attachment across shadow DOM boundaries when possible (gh-3504)
+		if ( documentElement.attachShadow ) {
+			isAttached = function( elem ) {
+				return jQuery.contains( elem.ownerDocument, elem ) ||
+					elem.getRootNode( composed ) === elem.ownerDocument;
+			};
+		}
 	var isHiddenWithinTree = function( elem, el ) {
 
 			// isHiddenWithinTree might be called from jQuery#filter function;
@@ -9313,7 +9751,7 @@
 				// Support: Firefox <=43 - 45
 				// Disconnected elements can have computed display: none, so first confirm that elem is
 				// in the document.
-				jQuery.contains( elem.ownerDocument, elem ) &&
+				isAttached( elem ) &&
 
 				jQuery.css( elem, "display" ) === "none";
 		};
@@ -9355,7 +9793,8 @@
 			unit = valueParts && valueParts[ 3 ] || ( jQuery.cssNumber[ prop ] ? "" : "px" ),
 
 			// Starting value computation is required for potential unit mismatches
-			initialInUnit = ( jQuery.cssNumber[ prop ] || unit !== "px" && +initial ) &&
+			initialInUnit = elem.nodeType &&
+				( jQuery.cssNumber[ prop ] || unit !== "px" && +initial ) &&
 				rcssNum.exec( jQuery.css( elem, prop ) );
 
 		if ( initialInUnit && initialInUnit[ 3 ] !== unit ) {
@@ -9502,7 +9941,7 @@
 	} );
 	var rcheckableType = ( /^(?:checkbox|radio)$/i );
 
-	var rtagName = ( /<([a-z][^\/\0>\x20\t\r\n\f]+)/i );
+	var rtagName = ( /<([a-z][^\/\0>\x20\t\r\n\f]*)/i );
 
 	var rscriptType = ( /^$|^module$|\/(?:java|ecma)script/i );
 
@@ -9574,7 +10013,7 @@
 	var rhtml = /<|&#?\w+;/;
 
 	function buildFragment( elems, context, scripts, selection, ignored ) {
-		var elem, tmp, tag, wrap, contains, j,
+		var elem, tmp, tag, wrap, attached, j,
 			fragment = context.createDocumentFragment(),
 			nodes = [],
 			i = 0,
@@ -9638,13 +10077,13 @@
 				continue;
 			}
 
-			contains = jQuery.contains( elem.ownerDocument, elem );
+			attached = isAttached( elem );
 
 			// Append to fragment
 			tmp = getAll( fragment.appendChild( elem ), "script" );
 
 			// Preserve script evaluation history
-			if ( contains ) {
+			if ( attached ) {
 				setGlobalEval( tmp );
 			}
 
@@ -9687,8 +10126,6 @@
 		div.innerHTML = "<textarea>x</textarea>";
 		support.noCloneChecked = !!div.cloneNode( true ).lastChild.defaultValue;
 	} )();
-	var documentElement = document.documentElement;
-
 
 
 	var
@@ -9704,8 +10141,19 @@
 		return false;
 	}
 
+	// Support: IE <=9 - 11+
+	// focus() and blur() are asynchronous, except when they are no-op.
+	// So expect focus to be synchronous when the element is already active,
+	// and blur to be synchronous when the element is not already active.
+	// (focus and blur are always synchronous in other supported browsers,
+	// this just defines when we can count on it).
+	function expectSync( elem, type ) {
+		return ( elem === safeActiveElement() ) === ( type === "focus" );
+	}
+
 	// Support: IE <=9 only
-	// See #13393 for more info
+	// Accessing document.activeElement can throw unexpectedly
+	// https://bugs.jquery.com/ticket/13393
 	function safeActiveElement() {
 		try {
 			return document.activeElement;
@@ -10005,9 +10453,10 @@
 				while ( ( handleObj = matched.handlers[ j++ ] ) &&
 					!event.isImmediatePropagationStopped() ) {
 
-					// Triggered event must either 1) have no namespace, or 2) have namespace(s)
-					// a subset or equal to those in the bound event (both can have no namespace).
-					if ( !event.rnamespace || event.rnamespace.test( handleObj.namespace ) ) {
+					// If the event is namespaced, then each handler is only invoked if it is
+					// specially universal or its namespaces are a superset of the event's.
+					if ( !event.rnamespace || handleObj.namespace === false ||
+						event.rnamespace.test( handleObj.namespace ) ) {
 
 						event.handleObj = handleObj;
 						event.data = handleObj.data;
@@ -10131,39 +10580,53 @@
 				// Prevent triggered image.load events from bubbling to window.load
 				noBubble: true
 			},
-			focus: {
-
-				// Fire native event if possible so blur/focus sequence is correct
-				trigger: function() {
-					if ( this !== safeActiveElement() && this.focus ) {
-						this.focus();
-						return false;
-					}
-				},
-				delegateType: "focusin"
-			},
-			blur: {
-				trigger: function() {
-					if ( this === safeActiveElement() && this.blur ) {
-						this.blur();
-						return false;
-					}
-				},
-				delegateType: "focusout"
-			},
 			click: {
 
-				// For checkbox, fire native event so checked state will be right
-				trigger: function() {
-					if ( this.type === "checkbox" && this.click && nodeName( this, "input" ) ) {
-						this.click();
-						return false;
+				// Utilize native event to ensure correct state for checkable inputs
+				setup: function( data ) {
+
+					// For mutual compressibility with _default, replace `this` access with a local var.
+					// `|| data` is dead code meant only to preserve the variable through minification.
+					var el = this || data;
+
+					// Claim the first handler
+					if ( rcheckableType.test( el.type ) &&
+						el.click && nodeName( el, "input" ) &&
+						dataPriv.get( el, "click" ) === undefined ) {
+
+						// dataPriv.set( el, "click", ... )
+						leverageNative( el, "click", returnTrue );
 					}
+
+					// Return false to allow normal processing in the caller
+					return false;
+				},
+				trigger: function( data ) {
+
+					// For mutual compressibility with _default, replace `this` access with a local var.
+					// `|| data` is dead code meant only to preserve the variable through minification.
+					var el = this || data;
+
+					// Force setup before triggering a click
+					if ( rcheckableType.test( el.type ) &&
+						el.click && nodeName( el, "input" ) &&
+						dataPriv.get( el, "click" ) === undefined ) {
+
+						leverageNative( el, "click" );
+					}
+
+					// Return non-false to allow normal event-path propagation
+					return true;
 				},
 
-				// For cross-browser consistency, don't fire native .click() on links
+				// For cross-browser consistency, suppress native .click() on links
+				// Also prevent it if we're currently inside a leveraged native-event stack
 				_default: function( event ) {
-					return nodeName( event.target, "a" );
+					var target = event.target;
+					return rcheckableType.test( target.type ) &&
+						target.click && nodeName( target, "input" ) &&
+						dataPriv.get( target, "click" ) ||
+						nodeName( target, "a" );
 				}
 			},
 
@@ -10179,6 +10642,85 @@
 			}
 		}
 	};
+
+	// Ensure the presence of an event listener that handles manually-triggered
+	// synthetic events by interrupting progress until reinvoked in response to
+	// *native* events that it fires directly, ensuring that state changes have
+	// already occurred before other listeners are invoked.
+	function leverageNative( el, type, expectSync ) {
+
+		// Missing expectSync indicates a trigger call, which must force setup through jQuery.event.add
+		if ( !expectSync ) {
+			jQuery.event.add( el, type, returnTrue );
+			return;
+		}
+
+		// Register the controller as a special universal handler for all event namespaces
+		dataPriv.set( el, type, false );
+		jQuery.event.add( el, type, {
+			namespace: false,
+			handler: function( event ) {
+				var notAsync, result,
+					saved = dataPriv.get( this, type );
+
+				if ( ( event.isTrigger & 1 ) && this[ type ] ) {
+
+					// Interrupt processing of the outer synthetic .trigger()ed event
+					if ( !saved ) {
+
+						// Store arguments for use when handling the inner native event
+						saved = slice.call( arguments );
+						dataPriv.set( this, type, saved );
+
+						// Trigger the native event and capture its result
+						// Support: IE <=9 - 11+
+						// focus() and blur() are asynchronous
+						notAsync = expectSync( this, type );
+						this[ type ]();
+						result = dataPriv.get( this, type );
+						if ( saved !== result || notAsync ) {
+							dataPriv.set( this, type, false );
+						} else {
+							result = undefined;
+						}
+						if ( saved !== result ) {
+
+							// Cancel the outer synthetic event
+							event.stopImmediatePropagation();
+							event.preventDefault();
+							return result;
+						}
+
+					// If this is an inner synthetic event for an event with a bubbling surrogate
+					// (focus or blur), assume that the surrogate already propagated from triggering the
+					// native event and prevent that from happening again here.
+					// This technically gets the ordering wrong w.r.t. to `.trigger()` (in which the
+					// bubbling surrogate propagates *after* the non-bubbling base), but that seems
+					// less bad than duplication.
+					} else if ( ( jQuery.event.special[ type ] || {} ).delegateType ) {
+						event.stopPropagation();
+					}
+
+				// If this is a native event triggered above, everything is now in order
+				// Fire an inner synthetic event with the original arguments
+				} else if ( saved ) {
+
+					// ...and capture the result
+					dataPriv.set( this, type, jQuery.event.trigger(
+
+						// Support: IE <=9 - 11+
+						// Extend with the prototype to reset the above stopImmediatePropagation()
+						jQuery.extend( saved.shift(), jQuery.Event.prototype ),
+						saved,
+						this
+					) );
+
+					// Abort handling of the native event
+					event.stopImmediatePropagation();
+				}
+			}
+		} );
+	}
 
 	jQuery.removeEvent = function( elem, type, handle ) {
 
@@ -10292,6 +10834,7 @@
 		shiftKey: true,
 		view: true,
 		"char": true,
+		code: true,
 		charCode: true,
 		key: true,
 		keyCode: true,
@@ -10337,6 +10880,33 @@
 			return event.which;
 		}
 	}, jQuery.event.addProp );
+
+	jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateType ) {
+		jQuery.event.special[ type ] = {
+
+			// Utilize native event if possible so blur/focus sequence is correct
+			setup: function() {
+
+				// Claim the first handler
+				// dataPriv.set( this, "focus", ... )
+				// dataPriv.set( this, "blur", ... )
+				leverageNative( this, type, expectSync );
+
+				// Return false to allow normal processing in the caller
+				return false;
+			},
+			trigger: function() {
+
+				// Force setup before trigger
+				leverageNative( this, type );
+
+				// Return non-false to allow normal event-path propagation
+				return true;
+			},
+
+			delegateType: delegateType
+		};
+	} );
 
 	// Create mouseenter/leave events using mouseover/out and event-time checks
 	// so that event delegation works in jQuery.
@@ -10588,11 +11158,13 @@
 							if ( node.src && ( node.type || "" ).toLowerCase()  !== "module" ) {
 
 								// Optional AJAX dependency, but won't run scripts if not present
-								if ( jQuery._evalUrl ) {
-									jQuery._evalUrl( node.src );
+								if ( jQuery._evalUrl && !node.noModule ) {
+									jQuery._evalUrl( node.src, {
+										nonce: node.nonce || node.getAttribute( "nonce" )
+									} );
 								}
 							} else {
-								DOMEval( node.textContent.replace( rcleanScript, "" ), doc, node );
+								DOMEval( node.textContent.replace( rcleanScript, "" ), node, doc );
 							}
 						}
 					}
@@ -10614,7 +11186,7 @@
 			}
 
 			if ( node.parentNode ) {
-				if ( keepData && jQuery.contains( node.ownerDocument, node ) ) {
+				if ( keepData && isAttached( node ) ) {
 					setGlobalEval( getAll( node, "script" ) );
 				}
 				node.parentNode.removeChild( node );
@@ -10632,7 +11204,7 @@
 		clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 			var i, l, srcElements, destElements,
 				clone = elem.cloneNode( true ),
-				inPage = jQuery.contains( elem.ownerDocument, elem );
+				inPage = isAttached( elem );
 
 			// Fix IE cloning issues
 			if ( !support.noCloneChecked && ( elem.nodeType === 1 || elem.nodeType === 11 ) &&
@@ -10928,8 +11500,10 @@
 
 			// Support: IE 9 only
 			// Detect overflow:scroll screwiness (gh-3699)
+			// Support: Chrome <=64
+			// Don't get tricked when zoom affects offsetWidth (gh-4029)
 			div.style.position = "absolute";
-			scrollboxSizeVal = div.offsetWidth === 36 || "absolute";
+			scrollboxSizeVal = roundPixelMeasures( div.offsetWidth / 3 ) === 12;
 
 			documentElement.removeChild( container );
 
@@ -11000,7 +11574,7 @@
 		if ( computed ) {
 			ret = computed.getPropertyValue( name ) || computed[ name ];
 
-			if ( ret === "" && !jQuery.contains( elem.ownerDocument, elem ) ) {
+			if ( ret === "" && !isAttached( elem ) ) {
 				ret = jQuery.style( elem, name );
 			}
 
@@ -11056,29 +11630,12 @@
 	}
 
 
-	var
+	var cssPrefixes = [ "Webkit", "Moz", "ms" ],
+		emptyStyle = document.createElement( "div" ).style,
+		vendorProps = {};
 
-		// Swappable if display is none or starts with table
-		// except "table", "table-cell", or "table-caption"
-		// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
-		rdisplayswap = /^(none|table(?!-c[ea]).+)/,
-		rcustomProp = /^--/,
-		cssShow = { position: "absolute", visibility: "hidden", display: "block" },
-		cssNormalTransform = {
-			letterSpacing: "0",
-			fontWeight: "400"
-		},
-
-		cssPrefixes = [ "Webkit", "Moz", "ms" ],
-		emptyStyle = document.createElement( "div" ).style;
-
-	// Return a css property mapped to a potentially vendor prefixed property
+	// Return a vendor-prefixed property or undefined
 	function vendorPropName( name ) {
-
-		// Shortcut for names that are not vendor prefixed
-		if ( name in emptyStyle ) {
-			return name;
-		}
 
 		// Check for vendor prefixed names
 		var capName = name[ 0 ].toUpperCase() + name.slice( 1 ),
@@ -11092,15 +11649,32 @@
 		}
 	}
 
-	// Return a property mapped along what jQuery.cssProps suggests or to
-	// a vendor prefixed property.
+	// Return a potentially-mapped jQuery.cssProps or vendor prefixed property
 	function finalPropName( name ) {
-		var ret = jQuery.cssProps[ name ];
-		if ( !ret ) {
-			ret = jQuery.cssProps[ name ] = vendorPropName( name ) || name;
+		var final = jQuery.cssProps[ name ] || vendorProps[ name ];
+
+		if ( final ) {
+			return final;
 		}
-		return ret;
+		if ( name in emptyStyle ) {
+			return name;
+		}
+		return vendorProps[ name ] = vendorPropName( name ) || name;
 	}
+
+
+	var
+
+		// Swappable if display is none or starts with table
+		// except "table", "table-cell", or "table-caption"
+		// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
+		rdisplayswap = /^(none|table(?!-c[ea]).+)/,
+		rcustomProp = /^--/,
+		cssShow = { position: "absolute", visibility: "hidden", display: "block" },
+		cssNormalTransform = {
+			letterSpacing: "0",
+			fontWeight: "400"
+		};
 
 	function setPositiveNumber( elem, value, subtract ) {
 
@@ -11173,7 +11747,10 @@
 				delta -
 				extra -
 				0.5
-			) );
+
+			// If offsetWidth/offsetHeight is unknown, then we can't determine content-box scroll gutter
+			// Use an explicit zero to avoid NaN (gh-3964)
+			) ) || 0;
 		}
 
 		return delta;
@@ -11183,9 +11760,16 @@
 
 		// Start with computed style
 		var styles = getStyles( elem ),
+
+			// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-4322).
+			// Fake content-box until we know it's needed to know the true value.
+			boxSizingNeeded = !support.boxSizingReliable() || extra,
+			isBorderBox = boxSizingNeeded &&
+				jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+			valueIsBorderBox = isBorderBox,
+
 			val = curCSS( elem, dimension, styles ),
-			isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
-			valueIsBorderBox = isBorderBox;
+			offsetProp = "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 );
 
 		// Support: Firefox <=54
 		// Return a confounding non-pixel value or feign ignorance, as appropriate.
@@ -11196,22 +11780,29 @@
 			val = "auto";
 		}
 
-		// Check for style in case a browser which returns unreliable values
-		// for getComputedStyle silently falls back to the reliable elem.style
-		valueIsBorderBox = valueIsBorderBox &&
-			( support.boxSizingReliable() || val === elem.style[ dimension ] );
 
 		// Fall back to offsetWidth/offsetHeight when value is "auto"
 		// This happens for inline elements with no explicit setting (gh-3571)
 		// Support: Android <=4.1 - 4.3 only
 		// Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
-		if ( val === "auto" ||
-			!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) {
+		// Support: IE 9-11 only
+		// Also use offsetWidth/offsetHeight for when box sizing is unreliable
+		// We use getClientRects() to check for hidden/disconnected.
+		// In those cases, the computed value can be trusted to be border-box
+		if ( ( !support.boxSizingReliable() && isBorderBox ||
+			val === "auto" ||
+			!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) &&
+			elem.getClientRects().length ) {
 
-			val = elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ];
+			isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
 
-			// offsetWidth/offsetHeight provide border-box values
-			valueIsBorderBox = true;
+			// Where available, offsetWidth/offsetHeight approximate border box dimensions.
+			// Where not available (e.g., SVG), assume unreliable box-sizing and interpret the
+			// retrieved value as a content box dimension.
+			valueIsBorderBox = offsetProp in elem;
+			if ( valueIsBorderBox ) {
+				val = elem[ offsetProp ];
+			}
 		}
 
 		// Normalize "" and auto
@@ -11257,6 +11848,13 @@
 			"flexGrow": true,
 			"flexShrink": true,
 			"fontWeight": true,
+			"gridArea": true,
+			"gridColumn": true,
+			"gridColumnEnd": true,
+			"gridColumnStart": true,
+			"gridRow": true,
+			"gridRowEnd": true,
+			"gridRowStart": true,
 			"lineHeight": true,
 			"opacity": true,
 			"order": true,
@@ -11312,7 +11910,9 @@
 				}
 
 				// If a number was passed in, add the unit (except for certain CSS properties)
-				if ( type === "number" ) {
+				// The isCustomProp check can be removed in jQuery 4.0 when we only auto-append
+				// "px" to a few hardcoded values.
+				if ( type === "number" && !isCustomProp ) {
 					value += ret && ret[ 3 ] || ( jQuery.cssNumber[ origName ] ? "" : "px" );
 				}
 
@@ -11412,18 +12012,29 @@
 			set: function( elem, value, extra ) {
 				var matches,
 					styles = getStyles( elem ),
-					isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
-					subtract = extra && boxModelAdjustment(
-						elem,
-						dimension,
-						extra,
-						isBorderBox,
-						styles
-					);
+
+					// Only read styles.position if the test has a chance to fail
+					// to avoid forcing a reflow.
+					scrollboxSizeBuggy = !support.scrollboxSize() &&
+						styles.position === "absolute",
+
+					// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-3991)
+					boxSizingNeeded = scrollboxSizeBuggy || extra,
+					isBorderBox = boxSizingNeeded &&
+						jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+					subtract = extra ?
+						boxModelAdjustment(
+							elem,
+							dimension,
+							extra,
+							isBorderBox,
+							styles
+						) :
+						0;
 
 				// Account for unreliable border-box dimensions by comparing offset* to computed and
 				// faking a content-box to get border and padding (gh-3699)
-				if ( isBorderBox && support.scrollboxSize() === styles.position ) {
+				if ( isBorderBox && scrollboxSizeBuggy ) {
 					subtract -= Math.ceil(
 						elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ] -
 						parseFloat( styles[ dimension ] ) -
@@ -11591,9 +12202,9 @@
 				// Use .style if available and use plain properties where available.
 				if ( jQuery.fx.step[ tween.prop ] ) {
 					jQuery.fx.step[ tween.prop ]( tween );
-				} else if ( tween.elem.nodeType === 1 &&
-					( tween.elem.style[ jQuery.cssProps[ tween.prop ] ] != null ||
-						jQuery.cssHooks[ tween.prop ] ) ) {
+				} else if ( tween.elem.nodeType === 1 && (
+						jQuery.cssHooks[ tween.prop ] ||
+						tween.elem.style[ finalPropName( tween.prop ) ] != null ) ) {
 					jQuery.style( tween.elem, tween.prop, tween.now + tween.unit );
 				} else {
 					tween.elem[ tween.prop ] = tween.now;
@@ -13300,6 +13911,10 @@
 					encodeURIComponent( value == null ? "" : value );
 			};
 
+		if ( a == null ) {
+			return "";
+		}
+
 		// If an array was passed in, assume that it is an array of form elements.
 		if ( Array.isArray( a ) || ( a.jquery && !jQuery.isPlainObject( a ) ) ) {
 
@@ -13802,12 +14417,14 @@
 							if ( !responseHeaders ) {
 								responseHeaders = {};
 								while ( ( match = rheaders.exec( responseHeadersString ) ) ) {
-									responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
+									responseHeaders[ match[ 1 ].toLowerCase() + " " ] =
+										( responseHeaders[ match[ 1 ].toLowerCase() + " " ] || [] )
+											.concat( match[ 2 ] );
 								}
 							}
-							match = responseHeaders[ key.toLowerCase() ];
+							match = responseHeaders[ key.toLowerCase() + " " ];
 						}
-						return match == null ? null : match;
+						return match == null ? null : match.join( ", " );
 					},
 
 					// Raw string
@@ -14196,7 +14813,7 @@
 	} );
 
 
-	jQuery._evalUrl = function( url ) {
+	jQuery._evalUrl = function( url, options ) {
 		return jQuery.ajax( {
 			url: url,
 
@@ -14206,7 +14823,16 @@
 			cache: true,
 			async: false,
 			global: false,
-			"throws": true
+
+			// Only evaluate the response if it is successful (gh-4126)
+			// dataFilter is not invoked for failure responses, so using it instead
+			// of the default converter is kludgy but it works.
+			converters: {
+				"text script": function() {}
+			},
+			dataFilter: function( response ) {
+				jQuery.globalEval( response, options );
+			}
 		} );
 	};
 
@@ -14489,24 +15115,21 @@
 	// Bind script tag hack transport
 	jQuery.ajaxTransport( "script", function( s ) {
 
-		// This transport only deals with cross domain requests
-		if ( s.crossDomain ) {
+		// This transport only deals with cross domain or forced-by-attrs requests
+		if ( s.crossDomain || s.scriptAttrs ) {
 			var script, callback;
 			return {
 				send: function( _, complete ) {
-					script = jQuery( "<script>" ).prop( {
-						charset: s.scriptCharset,
-						src: s.url
-					} ).on(
-						"load error",
-						callback = function( evt ) {
+					script = jQuery( "<script>" )
+						.attr( s.scriptAttrs || {} )
+						.prop( { charset: s.scriptCharset, src: s.url } )
+						.on( "load error", callback = function( evt ) {
 							script.remove();
 							callback = null;
 							if ( evt ) {
 								complete( evt.type === "error" ? 404 : 200, evt.type );
 							}
-						}
-					);
+						} );
 
 					// Use native DOM manipulation to avoid our domManip AJAX trickery
 					document.head.appendChild( script[ 0 ] );
