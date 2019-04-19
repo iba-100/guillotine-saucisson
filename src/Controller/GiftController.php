@@ -45,4 +45,17 @@ $form = $this->createFormBuilder($gift)
     'form' => $form->createView(),
 ]);
 }
+
+public function lotery(){
+    $em = $this->getDoctrine()->getManager();
+    $connection = $em->getConnection();
+    $statement = $connection->prepare("SELECT * from gift order by RAND() limit 1");
+    $statement->execute();
+    $results = $statement->fetchAll();
+    echo "<h1> LE GAGNANT EST : </h1>". $results[0]['email'];
+    echo "<h1> PRENOM  : </h1>". $results[0]['firstname'];
+    echo "<h1> NOM  </h1>". $results[0]['lastname'];
+  
+    exit();
+}
 }
