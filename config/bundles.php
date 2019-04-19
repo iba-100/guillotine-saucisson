@@ -1,6 +1,9 @@
 <?php
 
 return [
+    FOS\CKEditorBundle\FOSCKEditorBundle::class => ['all' => true],
+    Odiseo\BlogBundle\OdiseoBlogBundle::class => ['all' => true],
+    Odiseo\SyliusBlogPlugin\OdiseoSyliusBlogPlugin::class => ['all' => true],
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
     Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
     Symfony\Bundle\SecurityBundle\SecurityBundle::class => ['all' => true],

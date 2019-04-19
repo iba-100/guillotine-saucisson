@@ -5,3 +5,12 @@ gift_participation:
 toto:
   path: /toto
 
+odiseo_sylius_blog_admin:
+    resource: "@OdiseoSyliusBlogPlugin/Resources/config/routing/admin.yml"
+    prefix: /admin
+
+odiseo_sylius_blog_shop:
+    resource: "@OdiseoSyliusBlogPlugin/Resources/config/routing/shop.yml"
+    prefix: /{_locale}/blog
+    requirements:
+        _locale: ^[a-z]{2}(?:_[A-Z]{2})?$
